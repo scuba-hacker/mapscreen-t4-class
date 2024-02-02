@@ -13,7 +13,7 @@
     "away":
     {
         "mikalhart/TinyGPSPlus": "1.0.3",
-        "adafruit/Adafruit NeoPixel": "1.11.0,
+        "adafruit/Adafruit NeoPixel": "1.11.0",
         "bxparks/AceButton": "1.10.1",
         "lvgl/lvgl": "8.3.9",
         "lewisxhe/XPowersLib": "0.2.1",
