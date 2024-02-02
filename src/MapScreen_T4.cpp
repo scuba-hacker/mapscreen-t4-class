@@ -1,10 +1,10 @@
-#if BUILD_MAPSCREEN_T4==1
+#include <Arduino.h>
 
 #include <MapScreen_T4.h>
 
 #include <TFT_eSPI.h>
 
-#include "LilyGo_amoled.h"
+#include <LilyGo_AMOLED.h>
 
 #include "fonts/NotoSansBold36.h"
 
@@ -283,5 +283,3 @@ bool MapScreen_T4::isPixelInSubZone(const MapScreen_ex::pixel loc, const geo_map
 
   return false;
 }
-
-#endif
