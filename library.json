@@ -2,12 +2,12 @@
     "dependencies":
     {
         "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled",
-        "nav-waypoints": "https://github.com/scuba-hacker/navigation-waypoints"
+        "nav-waypoints": "https://github.com/scuba-hacker/navigation-waypoints",
         "mapscreen-ex-class": "https://github.com/scuba-hacker/mapscreen-ex-class",
 
         
         "LilyGo-AMOLED-Series": "https://github.com/scuba-hacker/LilyGo-AMOLED-Series",
-        "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled",
+        "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled"
 
     },
     "away":
