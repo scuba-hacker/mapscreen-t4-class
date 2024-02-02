@@ -4,6 +4,6 @@
         "mapscreen-ex-class": "https://github.com/scuba-hacker/mapscreen-ex-class",
         "nav-waypoints": "https://github.com/scuba-hacker/navigation-waypoints",
         "LilyGo-AMOLED-Series": "https://github.com/scuba-hacker/LilyGo-AMOLED-Series",
-        "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled"
+        "TFT_eSPI": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled"
     }
 }
