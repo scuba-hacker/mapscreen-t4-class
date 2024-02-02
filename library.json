@@ -7,7 +7,8 @@
 
         
         "LilyGo-AMOLED-Series": "https://github.com/scuba-hacker/LilyGo-AMOLED-Series",
-        "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled"
+        "tft-espi": "https://github.com/scuba-hacker/TFT_eSPI#PushImageScaled",
+        "lewisxhe/SensorLib": "0.1.4"
 
     },
     "away":
@@ -17,7 +18,6 @@
         "bxparks/AceButton": "1.10.1",
         "lvgl/lvgl": "8.3.9",
         "lewisxhe/XPowersLib": "0.2.1",
-        "lewisxhe/SensorLib": "0.1.4",
         "FS": "FS",
         "SPIFFS" : "SPIFFS",
         "SD": "SD",
