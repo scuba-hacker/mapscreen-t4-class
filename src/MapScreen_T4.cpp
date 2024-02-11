@@ -17,14 +17,14 @@ extern const uint16_t lily_wraysbury_All[];
 
 const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
 {
-  [0] = { .mapData = lily_wraysbury_N, .label="North", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5503, .mapLongitudeRight = -0.5473, .mapLatitudeBottom = 51.4613},
-  [1] = { .mapData = lily_wraysbury_W, .label="West", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5501, .mapLongitudeRight = -0.5471, .mapLatitudeBottom = 51.4606},
-  [2] = { .mapData = lily_wraysbury_SW, .label="South West", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5494, .mapLongitudeRight = -0.5464, .mapLatitudeBottom = 51.4597},
-  [3] = { .mapData = lily_wraysbury_S, .label="South", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5491, .mapLongitudeRight = -0.5461, .mapLatitudeBottom = 51.4591},
-  [4] = { .mapData = lily_wraysbury_SE, .label="South East", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.548, .mapLongitudeRight = -0.545, .mapLatitudeBottom = 51.4588},
-  [5] = { .mapData = lily_wraysbury_All, .label="All", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5517, .mapLongitudeRight = -0.5437, .mapLatitudeBottom = 51.4588},
-  [6] = { .mapData = nullptr, .label="Canoe", .backColour=TFT_CYAN, .backText="Canoe",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54910, .mapLongitudeRight = -0.54880, .mapLatitudeBottom = 51.46190}, // Canoe area
-  [7] = { .mapData = nullptr, .label="Sub",  .backColour=TFT_CYAN, .backText="Sub",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54931, .mapLongitudeRight = -0.54900, .mapLatitudeBottom = 51.4608}, // Sub area
+  [0] = { .mapData = lily_wraysbury_N, .label="North", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5503, .mapLongitudeRight = -0.5473, .mapLatitudeBottom = 51.4613}, // -0.5503,51.4613,-0.5473,51.4627
+  [1] = { .mapData = lily_wraysbury_W, .label="West", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5501, .mapLongitudeRight = -0.5471, .mapLatitudeBottom = 51.4606},  // -0.5501,51.4606,-0.5471,51.462
+  [2] = { .mapData = lily_wraysbury_SW, .label="South West", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5494, .mapLongitudeRight = -0.5464, .mapLatitudeBottom = 51.4597}, // 0.5494,51.4597,-0.5464,51.4611
+  [3] = { .mapData = lily_wraysbury_S, .label="South", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5491, .mapLongitudeRight = -0.5461, .mapLatitudeBottom = 51.4591}, // -0.5491,51.4591,-0.5461,51.4605
+  [4] = { .mapData = lily_wraysbury_SE, .label="South East", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.548, .mapLongitudeRight = -0.545, .mapLatitudeBottom = 51.4588}, //  -0.548,51.4588,-0.545,51.4602
+  [5] = { .mapData = lily_wraysbury_All, .label="All", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5517, .mapLongitudeRight = -0.5437, .mapLatitudeBottom = 51.4588}, //  -0.5517,51.4588,-0.5437,51.4626
+  [6] = { .mapData = nullptr, .label="Canoe", .backColour=TFT_CYAN, .backText="Canoe",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54910, .mapLongitudeRight = -0.54880, .mapLatitudeBottom = 51.46190}, // Canoe area - check
+  [7] = { .mapData = nullptr, .label="Sub",  .backColour=TFT_CYAN, .backText="Sub",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54931, .mapLongitudeRight = -0.54900, .mapLatitudeBottom = 51.4608}, // Sub area - check
 };
 
 const std::array<MapScreen_ex::pixel, MapScreen_T4::s_registrationPixelsSize> MapScreen_T4::s_registrationPixels
@@ -219,28 +219,35 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
       _zoom = 1;
       nextMap = _subZoneMap;
     }
-    else if (loc.x >= 620 || loc.y >= 370 )
+    else if (loc.x >= 570 || loc.y >= 420 )
     {
       nextMap=_SWMap;
     }
-    else if (loc.x <=10 || loc.y <= 10)
+    else if (loc.y <= 30)
     {
       nextMap=_NMap;
     }
   }
   else if (thisMap == _SWMap)
   {
-    if (loc.x >= 620 || loc.y >=370)
+    if (loc.x >= 570 || loc.y >= 420)
       nextMap=_SMap;
-    else if (loc.x <= 30 || loc.y <= 30)
-      nextMap=_NMap;          // go left from 2 to 1
+    else if (loc.x <= 1 || loc.y <= 30)
+      nextMap=_WMap;          // go left from 2 to 1
   }
   else if (thisMap == _SMap)
   {
     if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
       nextMap = _SWMap;
-    else if (loc.x >= 570 || loc.y >= 370)
+    else if (loc.x >= 570 || loc.y >= 420)
       nextMap = _SEMap;
+  }
+  else if (thisMap == _SEMap)
+  {
+    if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
+      nextMap = _SMap;
+//    else if (loc.x >= 570 || loc.y >= 420)
+//      nextMap = _SEMap;
   }
 
   return nextMap;
