@@ -7,6 +7,7 @@
 #include <LilyGo_AMOLED.h>
 
 #include "fonts/NotoSansBold36.h"
+#include "fonts/Final_Frontier_28.h"
 
 extern const uint16_t lily_wraysbury_N[];
 extern const uint16_t lily_wraysbury_W[];
@@ -61,6 +62,7 @@ const MapScreen_ex::MapScreenAttr MapScreen_T4::s_mapT4Attr =
   .headingIndicatorOffsetY = 0,
 
   .diverHeadingColour = TFT_BLUE,
+  .diverHeadingLinePixelLength = 100,
 
   .featureSpriteColour = TFT_MAGENTA,
   .featureSpriteRadius = 5,
@@ -68,12 +70,12 @@ const MapScreen_ex::MapScreenAttr MapScreen_T4::s_mapT4Attr =
   .targetSpriteColour = TFT_RED,
   .lastTargetSpriteColour = TFT_BLUE,
 
-  .directionLineColour = TFT_DARKGREEN,
-  .directionLinePixelLength = 70,
+  .nearestExitLineColour = TFT_DARKGREEN,
+  .nearestExitLinePixelLength = 135,
 
   .targetLineColour = TFT_RED,
-  .targetLinePixelLength = 100,
-  .useSpriteForFeatures = true
+  .targetLinePixelLength = 175,
+  .useSpriteForFeatures = false
 };
 
 MapScreen_ex::pixel MapScreen_T4::getRegistrationMarkLocation(int index) 
@@ -122,12 +124,112 @@ MapScreen_T4::MapScreen_T4(TFT_eSPI& tft, LilyGo_AMOLED& lilygoT3) : MapScreen_e
   _scratchPadSprite->createSprite(getTFTWidth(),getTFTHeight());
 }
 
+void MapScreen_T4::drawMapScale(const geo_map& featureMap)
+{
+  TFT_eSprite& sprite = getCleanMapSprite();
+
+  pixel right_anchor(getTFTWidth() - 10,70);
+
+  int markLength = 10; // pixels
+  int yOffsetLabel = 10; // pixels off anchor
+
+  int scaleColour = TFT_VIOLET;
+  int fontSize = 1;
+
+  int distanceToShow = 0;
+  int pixelsForDistance = 0;
+
+  if (isAllLakeShown())
+  {
+    distanceToShow = 100;
+    pixelsForDistance = 108;
+  }
+  else
+  {
+    if (_zoom == 1)
+      distanceToShow = 30;
+    else if (_zoom == 2)
+      distanceToShow = 20;
+    else if (_zoom == 3)
+      distanceToShow = 20;
+    else if (_zoom == 4)
+      distanceToShow = 10;
+
+    const int pixelsFor10m = 29;
+    pixelsForDistance = pixelsFor10m * (distanceToShow / 10) * _zoom;
+  }
+
+  char distanceLabel[5];
+  snprintf(distanceLabel,sizeof(distanceLabel),"%dm",distanceToShow);
+
+  sprite.drawFastHLine(right_anchor.x - pixelsForDistance, right_anchor.y, pixelsForDistance,scaleColour);  // horiz scale line
+  sprite.drawFastHLine(right_anchor.x - pixelsForDistance, right_anchor.y+1, pixelsForDistance,scaleColour);  // horiz scale line
+  sprite.drawFastHLine(right_anchor.x - pixelsForDistance, right_anchor.y+2, pixelsForDistance,scaleColour);  // horiz scale line
+
+  sprite.drawFastVLine(right_anchor.x - pixelsForDistance, right_anchor.y - markLength, markLength, scaleColour); // left tick
+  sprite.drawFastVLine(right_anchor.x - pixelsForDistance+1, right_anchor.y - markLength, markLength, scaleColour); // left tick
+  sprite.drawFastVLine(right_anchor.x - pixelsForDistance+2, right_anchor.y - markLength, markLength, scaleColour); // left tick
+  
+  sprite.drawFastVLine(right_anchor.x, right_anchor.y - markLength, markLength, scaleColour);    // right tick
+  sprite.drawFastVLine(right_anchor.x-1, right_anchor.y - markLength, markLength, scaleColour);    // right tick
+  sprite.drawFastVLine(right_anchor.x-2, right_anchor.y - markLength, markLength, scaleColour);    // right tick
+
+  sprite.setTextColor(scaleColour);
+  sprite.drawCentreString(distanceLabel,right_anchor.x - pixelsForDistance / 2, right_anchor.y + yOffsetLabel,1);    // scale label
+}
+
+void MapScreen_T4::testAndDisplayScale()
+{
+  getCompositeSprite().fillSprite(TFT_RED);
+  getCompositeSprite().setCursor(0,30);
+
+  // x1 zoom map
+  measureScale(10,_SMap);  // 29 pixels
+  measureScale(20,_SMap);  // 58 pixels
+  measureScale(100,_SMap); // 290 pixels
+
+  // all lake map
+  measureScale(10,_allLakeMap);   // 10 pixels
+  measureScale(20,_allLakeMap);   // 21 pixels
+  measureScale(100,_allLakeMap);  // 108 pixels
+
+  delay(30000);
+}
+
+void MapScreen_T4::measureScale(double requiredDistance, const MapScreen_ex::geo_map* featureMap)
+{
+  getCompositeSprite().printf("Pixels for %.0f m ",requiredDistance);
+  copyCompositeSpriteToDisplay();
+
+  double startLatitude = 51.4601315714286;
+  double startLongitude = -0.547417857142857;
+  double diverLatitude = startLatitude;
+  double diverLongitude = startLongitude;
+
+  MapScreen_ex::pixel startPixel = convertGeoToPixelDouble(diverLatitude, diverLongitude, *featureMap);
+  MapScreen_ex::pixel endPixel = startPixel;
+
+  double distance = 0.0;
+
+  while (distance < requiredDistance)
+  {
+    diverLongitude += 0.0000001;
+
+    distance = distanceBetween(startLatitude, startLongitude, diverLatitude, diverLongitude);
+  }
+
+  endPixel = convertGeoToPixelDouble(diverLatitude, diverLongitude, *featureMap);
+
+  getCompositeSprite().printf("= %hu\n",endPixel.x-startPixel.x);
+  copyCompositeSpriteToDisplay();
+}
+
 void MapScreen_T4::initMapScreen()
 {
   MapScreen_ex::initMapScreen();
 
   getCompositeSprite().loadFont(NotoSansBold36);
-  getCleanMapSprite().loadFont(NotoSansBold36);
+  getCleanMapSprite().loadFont(Final_Frontier_28);
 }
 
 int MapScreen_T4::getFirstDetailMapIndex()
@@ -164,13 +266,46 @@ void MapScreen_T4::fillScreen(int colour)
 // This needs customising for the T4 maps. Writes text to the canoe/sub zoomed in zones
 void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex::geo_map& map)
 {
-    if (map.backText)
-    {
-      sprite.setCursor(5,30);
-      sprite.setTextSize(3);
-      sprite.setTextColor(TFT_BLUE, map.backColour);
-      sprite.println(map.backText);
-    }
+  sprite.setCursor(0,20);
+  sprite.setTextSize(3);
+  sprite.setTextColor(TFT_DARKGREY);
+  double scaledDistance = _targetDistance;
+  char distanceUnitPrefix = ' ';
+  if (_targetDistance >= 1000)
+  {
+    distanceUnitPrefix = 'k';
+    scaledDistance = _targetDistance / 1000.0;
+  }
+
+  const char* targetLabelMinusCode = strstr(WraysburyWaypoints::waypoints[_targetWaypointIndex]._label," ");
+
+  if (targetLabelMinusCode)
+    targetLabelMinusCode++;
+  else
+    targetLabelMinusCode=WraysburyWaypoints::waypoints[_targetWaypointIndex]._label;
+
+  sprite.printf("%.0f%cm to %s",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
+
+  sprite.setCursor(555,20);
+
+  char x = (isAllLakeShown() ? ' ' : 'x');
+  char zoom = (isAllLakeShown() ? ' ' :  '0' + _zoom);
+
+  sprite.printf("%c%c",x, zoom);
+
+  sprite.setCursor(0,375);
+
+  const char* nearestLabelMinusCode = strstr(WraysburyWaypoints::waypoints[_nearestFeatureIndex]._label," ");
+
+  if (nearestLabelMinusCode)
+    nearestLabelMinusCode++;
+  else
+    nearestLabelMinusCode=WraysburyWaypoints::waypoints[_nearestFeatureIndex]._label;
+
+  if (_nearestFeatureDistance < 5)
+    sprite.printf("At %s",nearestLabelMinusCode);
+  else if (_nearestFeatureDistance < 12)
+    sprite.printf("Near to %s (%.0f m)",nearestLabelMinusCode, _nearestFeatureDistance);
 }
 
 // This needs customising for the T4 maps. Currently switches when within 30 pixels of screen edge.
@@ -184,19 +319,19 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
   if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
   {
     nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
-    _zoom = _priorToZoneZoom;
+    _zoom = _prevZoom;
   }
   else if (thisMap == _NMap)   // go right from 0 to 1
   {
     if (isPixelInCanoeZone(loc, *thisMap))
     {
-      _priorToZoneZoom=_zoom;
+      _prevZoom=_zoom;
       _zoom = 1;
       nextMap = _canoeZoneMap;
     }
     else if (isPixelInSubZone(loc, *thisMap))
     {
-      _priorToZoneZoom=_zoom;
+      _prevZoom=_zoom;
       _zoom = 1;
       nextMap = _subZoneMap;
     }
@@ -209,13 +344,13 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
   { 
     if (isPixelInCanoeZone(loc, *thisMap))
     {
-      _priorToZoneZoom=_zoom;
+      _prevZoom=_zoom;
       _zoom = 1;
       nextMap = _canoeZoneMap;
     }
     else if (isPixelInSubZone(loc, *thisMap))
     {
-      _priorToZoneZoom=_zoom;
+      _prevZoom=_zoom;
       _zoom = 1;
       nextMap = _subZoneMap;
     }
