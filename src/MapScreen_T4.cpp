@@ -80,6 +80,10 @@ const MapScreen_ex::MapScreenAttr MapScreen_T4::s_mapT4Attr =
   .breadCrumbWidth = 21,
   .breadCrumbDropFixCount = 5,    // record location every 5 fixes.
 
+  .pinBackColour = TFT_DARKGREEN,
+  .pinForeColour = TFT_ORANGE,
+  .pinWidth = 30,
+
   .useSpriteForFeatures = false
 };
 
