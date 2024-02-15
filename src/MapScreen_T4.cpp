@@ -75,6 +75,11 @@ const MapScreen_ex::MapScreenAttr MapScreen_T4::s_mapT4Attr =
 
   .targetLineColour = TFT_RED,
   .targetLinePixelLength = 175,
+
+  .breadCrumbColour = TFT_RED,
+  .breadCrumbWidth = 21,
+  .breadCrumbDropFixCount = 5,    // record location every 5 fixes.
+
   .useSpriteForFeatures = false
 };
 
