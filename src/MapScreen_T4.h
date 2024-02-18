@@ -22,8 +22,10 @@ class MapScreen_T4 : public MapScreen_ex
         static const int s_subMapIndex = 7;
         static const int s_initialZoom = 1;
 
-        float _temperature=0.0;
-        float _humidity=0.0;
+        float _temperature = 0.0;
+        float _humidity = 0.0;
+        float _lidarDistance = 0.0;
+        float _prevLidarDistance = 0.0;
 
         LilyGo_AMOLED& _amoled;
     
@@ -86,6 +88,27 @@ class MapScreen_T4 : public MapScreen_ex
         {
             _temperature = goProCaseTemperature;
             _humidity = goProCaseHumidity;
+        }
+
+        void setLidarDistance(float distance)
+        { 
+            if (distance > 0.2)
+            {
+                if (_lidarDistance > 0.2)
+                    _prevLidarDistance = _lidarDistance;
+                else
+                    _prevLidarDistance = distance;
+                                        
+                _lidarDistance = distance;
+            }
+            else if (distance >= 0)
+            {
+               _lidarDistance = -2;
+            }
+            else
+            {
+                _lidarDistance = distance;
+            }
         }
 };
 

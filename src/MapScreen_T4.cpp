@@ -317,19 +317,51 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
     sprite.printf("Near to %s (%.0f m)",nearestLabelMinusCode, _nearestFeatureDistance);
 
   sprite.setCursor(450, 417);
-  sprite.setTextColor(TFT_NAVY);
-  sprite.printf("%.0fC ",_temperature);
 
-  if (_humidity > 85)
-      sprite.setTextColor(TFT_RED);
-  else if (_humidity > 80)
-      sprite.setTextColor(TFT_ORANGE);
-  else if (_humidity > 75)
-      sprite.setTextColor(TFT_GREENYELLOW);
+  if(_temperature != -1.0 && _humidity != -1.0)
+  {
+    sprite.setTextColor(TFT_NAVY);
+    sprite.printf("%.0fC ",_temperature);
+
+    if (_humidity > 85)
+        sprite.setTextColor(TFT_RED);
+    else if (_humidity > 80)
+        sprite.setTextColor(TFT_ORANGE);
+    else if (_humidity > 75)
+        sprite.setTextColor(TFT_GREENYELLOW);
+    else
+        sprite.setTextColor(TFT_DARKGREEN);
+
+    sprite.printf("%.0f%%",_humidity);
+  }
   else
-      sprite.setTextColor(TFT_DARKGREEN);
+  {
+    sprite.setTextColor(TFT_RED);
+    sprite.printf("ERROR");
+  }
 
-  sprite.printf("%.0f%%",_humidity);
+  sprite.setCursor(260,417);
+  
+  if (_lidarDistance >= 0)
+  {   
+    sprite.setTextColor(TFT_MAGENTA);
+    sprite.printf("%.1f m",_lidarDistance);
+  }
+  else if (_lidarDistance == -2)
+  {
+    sprite.setTextColor(TFT_DARKGREY);
+    sprite.printf("%.1f m",_prevLidarDistance);
+  }
+  else if (_lidarDistance == -0.5)
+  {
+    sprite.setTextColor(TFT_RED);
+    sprite.printf("NO OBJ");
+  }
+  else
+  {
+    sprite.setTextColor(TFT_MAGENTA);
+    sprite.printf("ERROR");
+  }
 }
 
 // This needs customising for the T4 maps. Currently switches when within 30 pixels of screen edge.
