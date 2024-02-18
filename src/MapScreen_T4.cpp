@@ -315,6 +315,21 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
     sprite.printf("At %s",nearestLabelMinusCode);
   else if (_nearestFeatureDistance < 12)
     sprite.printf("Near to %s (%.0f m)",nearestLabelMinusCode, _nearestFeatureDistance);
+
+  sprite.setCursor(450, 417);
+  sprite.setTextColor(TFT_NAVY);
+  sprite.printf("%.0fC ",_temperature);
+
+  if (_humidity > 85)
+      sprite.setTextColor(TFT_RED);
+  else if (_humidity > 80)
+      sprite.setTextColor(TFT_ORANGE);
+  else if (_humidity > 75)
+      sprite.setTextColor(TFT_GREENYELLOW);
+  else
+      sprite.setTextColor(TFT_DARKGREEN);
+
+  sprite.printf("%.0f%%",_humidity);
 }
 
 // This needs customising for the T4 maps. Currently switches when within 30 pixels of screen edge.

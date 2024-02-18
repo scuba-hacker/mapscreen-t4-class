@@ -22,6 +22,9 @@ class MapScreen_T4 : public MapScreen_ex
         static const int s_subMapIndex = 7;
         static const int s_initialZoom = 1;
 
+        float _temperature=0.0;
+        float _humidity=0.0;
+
         LilyGo_AMOLED& _amoled;
     
         std::unique_ptr<TFT_eSprite> _scratchPadSprite;
@@ -78,6 +81,12 @@ class MapScreen_T4 : public MapScreen_ex
         
         void testAndDisplayScale();
         void measureScale(double requiredDistance, const MapScreen_ex::geo_map* featureMap);
+
+        void setHumidityAndTemp(float goProCaseHumidity, float goProCaseTemperature)
+        {
+            _temperature = goProCaseTemperature;
+            _humidity = goProCaseHumidity;
+        }
 };
 
 #endif
