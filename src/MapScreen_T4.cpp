@@ -133,10 +133,8 @@ MapScreen_T4::MapScreen_T4(TFT_eSPI& tft, LilyGo_AMOLED& lilygoT3) : MapScreen_e
   _scratchPadSprite->createSprite(getTFTWidth(),getTFTHeight());
 }
 
-void MapScreen_T4::drawMapScale(const geo_map& featureMap)
+void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& featureMap)
 {
-  TFT_eSprite& sprite = getCleanMapSprite();
-
   pixel right_anchor(getTFTWidth() - 10,70);
 
   int markLength = 10; // pixels
@@ -238,7 +236,18 @@ void MapScreen_T4::initMapScreen()
   MapScreen_ex::initMapScreen();
 
   getCompositeSprite().loadFont(NotoSansBold36);
-  getCleanMapSprite().loadFont(Final_Frontier_28);
+
+  if (&getBaseMapSprite() != &getCompositeSprite())
+    getBaseMapSprite().loadFont(Final_Frontier_28);
+}
+
+bool MapScreen_T4::useBaseMapCache() const
+{
+    // base map cache is used for oceanic because the much larger screen
+    // takes much longer to update than with tiger on the M5. The M5 doesn't
+    // need the map cache and this helps as tiger is otherwise very short / too short of memory now.
+    // Frame rate slows by at least factor of 2 if map cache not used with Oceanic.
+    return true;
 }
 
 int MapScreen_T4::getFirstDetailMapIndex()

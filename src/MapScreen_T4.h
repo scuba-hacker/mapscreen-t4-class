@@ -32,6 +32,7 @@ class MapScreen_T4 : public MapScreen_ex
         std::unique_ptr<TFT_eSprite> _scratchPadSprite;
         
         virtual void initMapScreen() override;
+        virtual bool useBaseMapCache() const override;
 
         virtual int getFirstDetailMapIndex() override;
         virtual int getEndDetailMaps() override;
@@ -79,7 +80,7 @@ class MapScreen_T4 : public MapScreen_ex
         virtual bool isPixelInCanoeZone(const MapScreen_ex::pixel loc, const MapScreen_ex::geo_map& thisMap) const override;
         virtual bool isPixelInSubZone(const MapScreen_ex::pixel loc, const MapScreen_ex::geo_map& thisMap) const override;
 
-        virtual void drawMapScale(const geo_map& featureMap) override;
+        virtual void drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& featureMap) override;
         
         void testAndDisplayScale();
         void measureScale(double requiredDistance, const MapScreen_ex::geo_map* featureMap);
