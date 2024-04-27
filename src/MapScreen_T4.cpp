@@ -359,7 +359,7 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
 
   sprite.setCursor(260,417);
   
-  if (_lidarDistance >= 0)
+  if (_lidarDistance >= 0.05)
   {   
     sprite.setTextColor(TFT_MAGENTA);
     sprite.printf("%.1f m",_lidarDistance);
@@ -376,8 +376,7 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   }
   else
   {
-    sprite.setTextColor(TFT_MAGENTA);
-    sprite.printf("ERROR");
+    // nothing to print
   }
 }
 
