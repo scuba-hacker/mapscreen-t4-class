@@ -295,15 +295,21 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
     scaledDistance = _targetDistance / 1000.0;
   }
 
-  const char* targetLabelMinusCode = strstr(WraysburyWaypoints::waypoints[_targetWaypointIndex]._label," ");
+  const char unknownWaypoint[] = "??? Unknown";
+  
+  const char* label = (_targetWaypointIndex != -1 ? WraysburyWaypoints::waypoints[_targetWaypointIndex]._label : unknownWaypoint);
+
+  const char* targetLabelMinusCode = strstr(label," ");
 
   if (targetLabelMinusCode)
     targetLabelMinusCode++;
   else
-    targetLabelMinusCode=WraysburyWaypoints::waypoints[_targetWaypointIndex]._label;
-
+  {
+    targetLabelMinusCode=label;
+  }
+- 
   sprite.printf("%.0f%cm to %s",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
-
+  
   sprite.setCursor(555,20);
 
   char x = (isAllLakeShown() ? ' ' : 'x');
@@ -318,7 +324,9 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   if (nearestLabelMinusCode)
     nearestLabelMinusCode++;
   else
+  {
     nearestLabelMinusCode=WraysburyWaypoints::waypoints[_nearestFeatureIndex]._label;
+  }
 
   if (_nearestFeatureDistance < 5)
     sprite.printf("At %s",nearestLabelMinusCode);
