@@ -1,5 +1,14 @@
 #include <stdint.h>
 
+#define STUBOUT
+
+#ifdef STUBOUT
+extern const uint16_t lily_vobster_Centre[] = {
+// w,h:1,1
+0x14AF
+};
+
+#else
 
 extern const uint16_t lily_vobster_Centre[] = {
 // w,h:600,450
@@ -33754,3 +33763,4 @@ extern const uint16_t lily_vobster_Centre[] = {
 0x35B6,0x35B6,0x35B6,0x35B6,0x35B6,0x35B6,0x35B6,0x35B6,
 0x35B6,0x15AE,0x15AE,0x35B6,0x35B6,0x35B6,0x35B6,0x35B6,
 };
+#endif

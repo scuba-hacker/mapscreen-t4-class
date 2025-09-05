@@ -18,12 +18,14 @@ extern const uint16_t lily_wraysbury_S[];
 extern const uint16_t lily_wraysbury_SE[];
 extern const uint16_t lily_wraysbury_All[];
 
-// Max 3 maps remaining
-//extern const uint16_t lily_home_Centre[];
-//extern const uint16_t lily_home_All[];
+extern const uint16_t lily_home_Centre[];
+extern const uint16_t lily_home_All[];
 
 extern const uint16_t lily_vobster_Centre[];
 extern const uint16_t lily_vobster_All[];
+
+extern const uint16_t lily_all_other_areas_Centre[];
+extern const uint16_t lily_all_other_areas_All[];
 
 const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
 {
@@ -35,10 +37,12 @@ const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
   [5] = { .mapData = lily_wraysbury_All, .label="All", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5517, .mapLongitudeRight = -0.5437, .mapLatitudeBottom = 51.4588}, //  -0.5517,51.4588,-0.5437,51.4626
   [6] = { .mapData = nullptr, .label="Canoe", .backColour=TFT_CYAN, .backText="Canoe",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54910, .mapLongitudeRight = -0.54880, .mapLatitudeBottom = 51.46190}, // Canoe area - check
   [7] = { .mapData = nullptr, .label="Sub",  .backColour=TFT_CYAN, .backText="Sub",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54931, .mapLongitudeRight = -0.54900, .mapLatitudeBottom = 51.4608}, // Sub area - check
-//  [8] = { .mapData = lily_home_Centre, .label="Home",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2889, .mapLongitudeRight = -0.2866, .mapLatitudeBottom = 51.3912}, // map top 51.3923
-//  [9] = { .mapData = lily_home_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2951, .mapLongitudeRight = -0.2817, .mapLatitudeBottom = 51.3882, }, // map top 51.3944
-  [8] = { .mapData = lily_vobster_Centre, .label="Vobster",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.4255, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.24465}, // map top 51.2472  origianal bot = 51.2448
-  [9] = { .mapData = lily_vobster_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.427, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.2447},  // map top 51.2479
+  [8] = { .mapData = lily_home_Centre, .label="Home",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2889, .mapLongitudeRight = -0.2866, .mapLatitudeBottom = 51.3912}, // map top 51.3923
+  [9] = { .mapData = lily_home_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2951, .mapLongitudeRight = -0.2817, .mapLatitudeBottom = 51.3882, }, // map top 51.3944
+  [10] = { .mapData = lily_vobster_Centre, .label="Vobster",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.4255, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.24465}, // map top 51.2472  origianal bot = 51.2448
+  [11] = { .mapData = lily_vobster_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.427, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.2447},  // map top 51.2479
+  [12] = { .mapData = lily_all_other_areas_Centre, .label="Out-To-Sea",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 0, .mapLongitudeRight = 1, .mapLatitudeBottom = 60},
+  [13] = { .mapData = lily_all_other_areas_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 0, .mapLongitudeRight = 1, .mapLatitudeBottom = 60},
 };
 
 const std::array<MapScreen_ex::pixel, MapScreen_T4::s_registrationPixelsSize> MapScreen_T4::s_registrationPixels
@@ -177,51 +181,82 @@ void MapScreen_T4::initFirstAndEndWaypointsIndices()
       _firstWaypointIndex = WraysburyWaypoints::getStartIndexVobster(); 
       _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexVobster();
       break;
-    case e_home_location:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
-      break;
     case e_wraysbury_location:
-    case e_other_location:
-    default:
       _firstWaypointIndex = WraysburyWaypoints::getStartIndexWraysbury();
       _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexWraysbury();
+      break;
+    case e_home_location:
+    case e_other_location:
+    case e_uninitialised_location:
+    default:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
       break;
   }
 }
 
+// de-dupe later
+const double uninitialisedLatitude = 0.0;
+const double uninitialisedLongitude = 0.0;
+
 void MapScreen_T4::setLocationLatLong(double lat, double lng)
 {
   bool override = false;
+  
+  USB_SERIAL.println("Start: setLocationLatLong");
+
+  if (lat == uninitialisedLatitude && lng == uninitialisedLongitude)
+  {
+    USB_SERIAL.println("Matched on Uninitialised Location");
+    _location = e_uninitialised_location;
+    USB_SERIAL.println("End: setLocationLatLong");
+    return;
+  }
 
   const MapScreen_ex::geo_map* m = s_maps+_allLake_WraysburyMapIndex;
   if (override)
   {
+    USB_SERIAL.println("Overriden Location to Vobster");
     _location = e_vobster_location;
   }
   else
   {
     if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
         lat > m->mapLatitudeBottom) // need latitudeTop reference
+    {
+          USB_SERIAL.println("Matched On Wraysbury Location");
         _location = e_wraysbury_location;
+    }
     else
     {
-  //    m = s_maps+_homeAllMapIndex;
+      m = s_maps+_homeAllMapIndex;
 
-  //   if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
-    //      lat > m->mapLatitudeBottom) // need latitudeTop reference
-    //      _location = e_home_location;
-    //  else
-    //  {
+      if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+            lat > m->mapLatitudeBottom) // need latitudeTop reference
+      {
+        USB_SERIAL.println("Matched On Home Location");
+        _location = e_home_location;
+      }
+      else
+      {
+        // skipped home location
+        USB_SERIAL.println("Skipped Home Location");
+        USB_SERIAL.printf("Lat: %f Long: %f,  home-bounds: %f, %f, %f\n", lat, lng, m->mapLongitudeLeft, m->mapLongitudeRight, m->mapLatitudeBottom);
+
         m = s_maps+_vobsterAllLakeMapIndex;
 
         if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
             lat > m->mapLatitudeBottom) // need latitudeTop reference
+        {
+          USB_SERIAL.println("Matched On Vobster Location");
           _location = e_vobster_location;
+        }
         else
-          _location = e_wraysbury_location;   // ********* out of range of all - change *********
-    //    }    
-    //  }
+        {
+          USB_SERIAL.println("Matched On Other Location");
+          _location = e_other_location;   // ********* out of range of all *********
+        }
+      }
     }
   }
 
@@ -232,6 +267,8 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
 //  //sprintf(_debugString,"exitwaycount %i",_exitWaypointCount); fillScreen(TFT_BROWN); delay(1000);
 
   _locationInitialised = true;
+
+  USB_SERIAL.println("End: setLocationLatLong");
 }
 
 void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& featureMap)
@@ -357,12 +394,12 @@ int MapScreen_T4::getFirstDetailMapIndex()
     case e_vobster_location:
       return _vobsterCentreMapIndex;
     case e_home_location:
-      return _vobsterCentreMapIndex;
-//      return _homeCentreMapIndex;
+      return _homeCentreMapIndex;
     case e_wraysbury_location:
+      return _N_WraysburyMapIndex;
     case e_other_location:
     default:
-      return _N_WraysburyMapIndex;
+      return _allOtherAreasCentreMapIndex;
   }
 }
 
@@ -373,12 +410,12 @@ int MapScreen_T4::getEndDetailMaps()
     case e_vobster_location:
       return _vobsterAllLakeMapIndex;
     case e_home_location:
-      return _vobsterAllLakeMapIndex;
-    //     return _homeAllMapIndex;
+      return _homeAllMapIndex;
     case e_wraysbury_location:
+      return _allLake_WraysburyMapIndex;
     case e_other_location:
     default:
-      return _allLake_WraysburyMapIndex;
+      return _allOtherAreasAllMapIndex;
   }
 }
 
@@ -521,10 +558,17 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 
   const MapScreen_ex::geo_map* nextMap = thisMap;
 
-  if (thisMap == s_maps+getAllMapIndex())
-    return thisMap;
+  USB_SERIAL.printf("Location: %s\n",getLocationName());
 
-  if (_location == e_wraysbury_location || _location == e_other_location)
+  if (thisMap == s_maps+getAllMapIndex())
+  {
+    USB_SERIAL.println("getNextMapByPixelLocation: staying on ALL map");
+    return thisMap;
+  }
+  
+  USB_SERIAL.println("getNextMapByPixelLocation: not ALL Map");
+
+  if (_location == e_wraysbury_location)
   {
     if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
     {
@@ -602,6 +646,10 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
       nextMap = s_maps+getFirstDetailMapIndex();
     }
     else if (_location == e_vobster_location)
+    {
+      nextMap = s_maps+getFirstDetailMapIndex();
+    }
+    else if (_location == e_other_location)
     {
       nextMap = s_maps+getFirstDetailMapIndex();
     }

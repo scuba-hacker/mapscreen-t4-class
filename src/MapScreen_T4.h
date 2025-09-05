@@ -51,12 +51,12 @@ class MapScreen_T4 : public MapScreen_ex
         static constexpr const MapScreen_ex::geo_map* _allLakeMap=s_maps+5;  static const uint8_t _allLake_WraysburyMapIndex = 5;
         static constexpr const MapScreen_ex::geo_map* _canoeZoneMap=s_maps+6;static const uint8_t _canoeZoneMapIndex = 6;
         static constexpr const MapScreen_ex::geo_map* _subZoneMap=s_maps+7;  static const uint8_t _subZoneMapIndex = 7;
-//        static constexpr const MapScreen_ex::geo_map* _homeCentreMap=s_maps+8;  static const uint8_t _homeCentreMapIndex = 8;
-//        static constexpr const MapScreen_ex::geo_map* _homeAllMap=s_maps+9;  static const uint8_t _homeAllMapIndex = 9;
-        static constexpr const MapScreen_ex::geo_map* _vobsterCentreMap=s_maps+8;  static const uint8_t _vobsterCentreMapIndex = 8;
-        static constexpr const MapScreen_ex::geo_map* _vobsterAllLakeMap=s_maps+9;  static const uint8_t _vobsterAllLakeMapIndex = 9;
-
-
+        static constexpr const MapScreen_ex::geo_map* _homeCentreMap=s_maps+8;  static const uint8_t _homeCentreMapIndex = 8;
+        static constexpr const MapScreen_ex::geo_map* _homeAllMap=s_maps+9;  static const uint8_t _homeAllMapIndex = 9;
+        static constexpr const MapScreen_ex::geo_map* _vobsterCentreMap=s_maps+10;  static const uint8_t _vobsterCentreMapIndex = 10;
+        static constexpr const MapScreen_ex::geo_map* _vobsterAllLakeMap=s_maps+11;  static const uint8_t _vobsterAllLakeMapIndex = 11;
+        static constexpr const MapScreen_ex::geo_map* _allOtherAreasCentreMap=s_maps+12;  static const uint8_t _allOtherAreasCentreMapIndex = 12;
+        static constexpr const MapScreen_ex::geo_map* _allOtherAreasAllMap=s_maps+13;  static const uint8_t _allOtherAreasAllMapIndex = 13;
 
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 1> boundingBoxesCanoe;
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 2> boundingBoxesSub;
@@ -74,6 +74,7 @@ class MapScreen_T4 : public MapScreen_ex
         const int vobster10metrePixelScale = 29;
         const int default10metrePixelScale = 29;
 
+        // MBJMBJ this will need to change
         int getPixelsFor10metres() const
         {
             const bool wraysbury=true;

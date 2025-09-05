@@ -1,5 +1,15 @@
 #include <stdint.h>
 
+#define STUBOUT
+
+#ifdef STUBOUT
+extern const uint16_t lily_vobster_All[] = {
+// w,h:1,1
+0x14AF
+};
+
+#else
+
 
 extern const uint16_t lily_vobster_All[] = {
 // w,h:600,450
@@ -33754,3 +33764,4 @@ extern const uint16_t lily_vobster_All[] = {
 0x38CE,0x38CE,0x38CE,0x38CE,0x38CE,0x38CE,0x38CE,0x38CE,
 0x38CE,0x38C6,0x18C6,0x38CE,0x38CE,0x38CE,0x38CE,0x38CE,
 };
+#endif
