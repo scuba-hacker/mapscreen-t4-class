@@ -41,8 +41,16 @@ const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
   [9] = { .mapData = lily_home_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2951, .mapLongitudeRight = -0.2817, .mapLatitudeBottom = 51.3882, }, // map top 51.3944
   [10] = { .mapData = lily_vobster_Centre, .label="Vobster",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.4255, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.24465}, // map top 51.2472  origianal bot = 51.2448
   [11] = { .mapData = lily_vobster_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.427, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.2447},  // map top 51.2479
-  [12] = { .mapData = lily_all_other_areas_Centre, .label="Out-To-Sea",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 0, .mapLongitudeRight = 1, .mapLatitudeBottom = 60},
-  [13] = { .mapData = lily_all_other_areas_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 0, .mapLongitudeRight = 1, .mapLatitudeBottom = 60},
+
+  // old bottom: 51.06601   last: 51.06511112 
+  [12] = { .mapData = lily_all_other_areas_Centre, .label="Out-To-Sea",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.269333, .mapLongitudeRight = 1.272333, .mapLatitudeBottom = 51.06538078},
+ // [13] = { .mapData = lily_all_other_areas_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.269333, .mapLongitudeRight = 1.272333, .mapLatitudeBottom = 51.06538078},
+
+//  [13] = { .mapData = lily_all_other_areas_All, .label="All", .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.263733, .mapLongitudeRight = 1.278033, .mapLatitudeBottom = 51.06265},
+
+  [13] = { .mapData = lily_all_other_areas_All, .label="All", .backColour=TFT_BLACK, .backText="",
+  .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.256483, .mapLongitudeRight = 1.285283,
+  .mapLatitudeBottom = 51.059282},
 };
 
 const std::array<MapScreen_ex::pixel, MapScreen_T4::s_registrationPixelsSize> MapScreen_T4::s_registrationPixels
@@ -186,7 +194,13 @@ void MapScreen_T4::initFirstAndEndWaypointsIndices()
       _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexWraysbury();
       break;
     case e_home_location:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
+      break;
     case e_other_location:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexOtherAreas(); 
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexOtherAreas();
+      break;
     case e_uninitialised_location:
     default:
       _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
@@ -273,7 +287,7 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
 
 void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& featureMap)
 {
-  pixel right_anchor(getTFTWidth() - 10,70);
+  pixel right_anchor(getTFTWidth() - 30,70);
 
   int markLength = 10; // pixels
   int yOffsetLabel = 10; // pixels off anchor
@@ -286,8 +300,26 @@ void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& feat
 
   if (isAllLakeShown())
   {
-    distanceToShow = 100;
-    pixelsForDistance = 108;
+    switch (_location)
+    {
+      case e_vobster_location:
+        distanceToShow = 100;
+        pixelsForDistance = 108; // needs correcting
+        break;
+      case e_home_location:
+        distanceToShow = 100;
+        pixelsForDistance = 108; // needs correcting
+        break;
+      case e_wraysbury_location:
+        distanceToShow = 100;
+        pixelsForDistance = 108; // worth checking
+        break;
+      case e_other_location:  // assuming 2km width 'all' map
+      default:
+        distanceToShow = 300;
+        pixelsForDistance = 90;
+        break;
+    }
   }
   else
   {
