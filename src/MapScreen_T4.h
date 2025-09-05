@@ -43,32 +43,54 @@ class MapScreen_T4 : public MapScreen_ex
 
         static const MapScreen_ex::geo_map s_maps[];
 
-        static constexpr const MapScreen_ex::geo_map* _NMap=s_maps;          static const uint8_t _NMapIndex = 0;
+        static constexpr const MapScreen_ex::geo_map* _NMap=s_maps;          static const uint8_t _N_WraysburyMapIndex = 0;
         static constexpr const MapScreen_ex::geo_map* _WMap=s_maps+1;        static const uint8_t _WMapIndex = 1;
         static constexpr const MapScreen_ex::geo_map* _SWMap=s_maps+2;       static const uint8_t _SWMapIndex = 2;
         static constexpr const MapScreen_ex::geo_map* _SMap=s_maps+3;        static const uint8_t _SMapIndex = 3;
         static constexpr const MapScreen_ex::geo_map* _SEMap=s_maps+4;       static const uint8_t _SEMapIndex = 4;
-        static constexpr const MapScreen_ex::geo_map* _allLakeMap=s_maps+5;  static const uint8_t _allLakeMapIndex = 5;
+        static constexpr const MapScreen_ex::geo_map* _allLakeMap=s_maps+5;  static const uint8_t _allLake_WraysburyMapIndex = 5;
         static constexpr const MapScreen_ex::geo_map* _canoeZoneMap=s_maps+6;static const uint8_t _canoeZoneMapIndex = 6;
         static constexpr const MapScreen_ex::geo_map* _subZoneMap=s_maps+7;  static const uint8_t _subZoneMapIndex = 7;
+//        static constexpr const MapScreen_ex::geo_map* _homeCentreMap=s_maps+8;  static const uint8_t _homeCentreMapIndex = 8;
+//        static constexpr const MapScreen_ex::geo_map* _homeAllMap=s_maps+9;  static const uint8_t _homeAllMapIndex = 9;
+        static constexpr const MapScreen_ex::geo_map* _vobsterCentreMap=s_maps+8;  static const uint8_t _vobsterCentreMapIndex = 8;
+        static constexpr const MapScreen_ex::geo_map* _vobsterAllLakeMap=s_maps+9;  static const uint8_t _vobsterAllLakeMapIndex = 9;
+
+
 
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 1> boundingBoxesCanoe;
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 2> boundingBoxesSub;
 
+/*
         static const int maxFeatures = 255;
         std::array<MapScreen_ex::geoRef, maxFeatures>    _featureToMaps;
-
+        void initFeatureToMapsLookup();
+        void initMapsForFeature(const NavigationWaypoint& waypoint, MapScreen_ex::geoRef& ref);
+*/
         static const MapScreenAttr s_mapT4Attr;
+
+        const int wraysbury10metrePixelScale = 29;
+        const int home10metrePixelScale = 29;
+        const int vobster10metrePixelScale = 29;
+        const int default10metrePixelScale = 29;
+
+        int getPixelsFor10metres() const
+        {
+            const bool wraysbury=true;
+            return (wraysbury ? wraysbury10metrePixelScale : default10metrePixelScale);
+        }
+
+    protected:
+        virtual void initFirstAndEndWaypointsIndices();
 
     public:
         MapScreen_T4(TFT_eSPI& tft, LilyGo_AMOLED& lilygoT3);
 
+        virtual void setLocationLatLong(double lat, double lng);
+
         virtual MapScreen_ex::pixel getRegistrationMarkLocation(int index) override;
 
         virtual int getRegistrationMarkLocationsSize() override { return s_registrationPixelsSize; }
-
-        void initFeatureToMapsLookup();
-        void initMapsForFeature(const NavigationWaypoint& waypoint, MapScreen_ex::geoRef& ref);
 
         virtual int16_t getTFTWidth() const override {return 600;}
         virtual int16_t getTFTHeight() const override {return 450; }

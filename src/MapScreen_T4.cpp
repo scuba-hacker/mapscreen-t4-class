@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#define USB_SERIAL Serial
+
 #include <MapScreen_T4.h>
 
 #include <TFT_eSPI.h>
@@ -16,6 +18,13 @@ extern const uint16_t lily_wraysbury_S[];
 extern const uint16_t lily_wraysbury_SE[];
 extern const uint16_t lily_wraysbury_All[];
 
+// Max 3 maps remaining
+//extern const uint16_t lily_home_Centre[];
+//extern const uint16_t lily_home_All[];
+
+extern const uint16_t lily_vobster_Centre[];
+extern const uint16_t lily_vobster_All[];
+
 const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
 {
   [0] = { .mapData = lily_wraysbury_N, .label="North", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5503, .mapLongitudeRight = -0.5473, .mapLatitudeBottom = 51.4613}, // -0.5503,51.4613,-0.5473,51.4627
@@ -26,6 +35,10 @@ const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
   [5] = { .mapData = lily_wraysbury_All, .label="All", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5517, .mapLongitudeRight = -0.5437, .mapLatitudeBottom = 51.4588}, //  -0.5517,51.4588,-0.5437,51.4626
   [6] = { .mapData = nullptr, .label="Canoe", .backColour=TFT_CYAN, .backText="Canoe",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54910, .mapLongitudeRight = -0.54880, .mapLatitudeBottom = 51.46190}, // Canoe area - check
   [7] = { .mapData = nullptr, .label="Sub",  .backColour=TFT_CYAN, .backText="Sub",.surveyMap=true, .swapBytes=false, .mapLongitudeLeft = -0.54931, .mapLongitudeRight = -0.54900, .mapLatitudeBottom = 51.4608}, // Sub area - check
+//  [8] = { .mapData = lily_home_Centre, .label="Home",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2889, .mapLongitudeRight = -0.2866, .mapLatitudeBottom = 51.3912}, // map top 51.3923
+//  [9] = { .mapData = lily_home_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.2951, .mapLongitudeRight = -0.2817, .mapLatitudeBottom = 51.3882, }, // map top 51.3944
+  [8] = { .mapData = lily_vobster_Centre, .label="Vobster",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.4255, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.24465}, // map top 51.2472  origianal bot = 51.2448
+  [9] = { .mapData = lily_vobster_All, .label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.427, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.2447},  // map top 51.2479
 };
 
 const std::array<MapScreen_ex::pixel, MapScreen_T4::s_registrationPixelsSize> MapScreen_T4::s_registrationPixels
@@ -98,42 +111,127 @@ MapScreen_ex::pixel MapScreen_T4::getRegistrationMarkLocation(int index)
         return pixel(-1,-1);
 }
 
+/*
+// _featureToMaps NOT USED?
 void MapScreen_T4::initFeatureToMapsLookup()
 {
-  for (int i=0; i<WraysburyWaypoints::getWaypointsCount(); i++)                    // MBJ REFACTOR  - needs range and enumerate in C++20
+  if (_location == e_wraysbury_location)
   {
-    initMapsForFeature(WraysburyWaypoints::waypoints[i],_featureToMaps[i]);     // index i used here
+    for (int i=0; i<WraysburyWaypoints::getWaypointsCount(); i++)                    // MBJ REFACTOR  - needs range and enumerate in C++20
+    {
+      sForFeature(WraysburyWaypoints::waypoints[i],_featureToMaps[i]);     // index i used here
+    }
   }
 }
 
+// _featureToMaps NOT USED?
 void MapScreen_T4::initMapsForFeature(const NavigationWaypoint& waypoint, geoRef& ref)
 {
-  int refIndex = 0;
-  
-  pixel p;
-  
-  for (uint8_t i = getFirstDetailMapIndex(); i < getEndDetailMaps(); i++)    // MBJ REFACTOR  - needs range and enumerate in C++20 (with break at getEndDetailMaps())
+  if (_location == e_wraysbury_location)
   {
-    p = convertGeoToPixelDouble(waypoint._lat, waypoint._long, s_maps[i]);
-    if (p.x >= 0 && p.x < getTFTWidth() && p.y >=0 && p.y < getTFTHeight())
+    int refIndex = 0;  
+
+    pixel p;
+    
+    for (uint8_t i = getFirstDetailMapIndex(); i < getEndDetailMaps(); i++)    // MBJ REFACTOR  - needs range and enumerate in C++20 (with break at getEndDetailMaps())
     {
-      ref.geoMaps[refIndex++] = i;    // index i used here
-    }
-    else
-    {
-      ref.geoMaps[refIndex++] = -1;
+      p = convertGeoToPixelDouble(waypoint._lat, waypoint._long, s_maps[i]);
+      if (p.x >= 0 && p.x < getTFTWidth() && p.y >=0 && p.y < getTFTHeight())
+      {
+        ref.geoMaps[refIndex++] = i;    // index i used here
+      }
+      else
+      {
+        ref.geoMaps[refIndex++] = -1;
+      }
     }
   }
 }
+*/
 
 MapScreen_T4::MapScreen_T4(TFT_eSPI& tft, LilyGo_AMOLED& lilygoT3) : MapScreen_ex(tft,s_mapT4Attr),_amoled(lilygoT3)
 {
-  initMapScreen();
-
-  initFeatureToMapsLookup();
+  _useDebugScreens = false;
 
   _scratchPadSprite = std::make_unique<TFT_eSprite>(&tft);  
   _scratchPadSprite->createSprite(getTFTWidth(),getTFTHeight());
+  _scratchPadSprite->loadFont(NotoSansBold36);
+
+  //sprintf(_debugString,"loadedfont"); fillScreen(TFT_BROWN); delay(1000);
+  _locationInitialised = false;
+  _location = e_wraysbury_location;
+
+   initMapScreen();
+
+ // initFeatureToMapsLookup();
+
+
+  //sprintf(_debugString,"initmapscreen"); fillScreen(TFT_BROWN); delay(1000);
+}
+
+void MapScreen_T4::initFirstAndEndWaypointsIndices()
+{
+  switch (_location)
+  {
+    case e_vobster_location:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexVobster(); 
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexVobster();
+      break;
+    case e_home_location:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
+      break;
+    case e_wraysbury_location:
+    case e_other_location:
+    default:
+      _firstWaypointIndex = WraysburyWaypoints::getStartIndexWraysbury();
+      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexWraysbury();
+      break;
+  }
+}
+
+void MapScreen_T4::setLocationLatLong(double lat, double lng)
+{
+  bool override = false;
+
+  const MapScreen_ex::geo_map* m = s_maps+_allLake_WraysburyMapIndex;
+  if (override)
+  {
+    _location = e_vobster_location;
+  }
+  else
+  {
+    if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+        lat > m->mapLatitudeBottom) // need latitudeTop reference
+        _location = e_wraysbury_location;
+    else
+    {
+  //    m = s_maps+_homeAllMapIndex;
+
+  //   if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+    //      lat > m->mapLatitudeBottom) // need latitudeTop reference
+    //      _location = e_home_location;
+    //  else
+    //  {
+        m = s_maps+_vobsterAllLakeMapIndex;
+
+        if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+            lat > m->mapLatitudeBottom) // need latitudeTop reference
+          _location = e_vobster_location;
+        else
+          _location = e_wraysbury_location;   // ********* out of range of all - change *********
+    //    }    
+    //  }
+    }
+  }
+
+  initFirstAndEndWaypointsIndices();
+  
+  initExitWaypoints();
+
+//  //sprintf(_debugString,"exitwaycount %i",_exitWaypointCount); fillScreen(TFT_BROWN); delay(1000);
+
+  _locationInitialised = true;
 }
 
 void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& featureMap)
@@ -165,8 +263,7 @@ void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& feat
     else if (_zoom == 4)
       distanceToShow = 10;
 
-    const int pixelsFor10m = 29;
-    pixelsForDistance = pixelsFor10m * (distanceToShow / 10) * _zoom;
+    pixelsForDistance = getPixelsFor10metres() * (distanceToShow / 10) * _zoom;
   }
 
   char distanceLabel[5];
@@ -255,17 +352,39 @@ bool MapScreen_T4::useBaseMapCache() const
 
 int MapScreen_T4::getFirstDetailMapIndex()
 {
-  return _NMapIndex;
+  switch (_location)
+  {
+    case e_vobster_location:
+      return _vobsterCentreMapIndex;
+    case e_home_location:
+      return _vobsterCentreMapIndex;
+//      return _homeCentreMapIndex;
+    case e_wraysbury_location:
+    case e_other_location:
+    default:
+      return _N_WraysburyMapIndex;
+  }
 }
 
 int MapScreen_T4::getEndDetailMaps()
 {
-  return _allLakeMapIndex;
+  switch (_location)
+  {
+    case e_vobster_location:
+      return _vobsterAllLakeMapIndex;
+    case e_home_location:
+      return _vobsterAllLakeMapIndex;
+    //     return _homeAllMapIndex;
+    case e_wraysbury_location:
+    case e_other_location:
+    default:
+      return _allLake_WraysburyMapIndex;
+  }
 }
 
 int MapScreen_T4::getAllMapIndex()
 {
-  return _allLakeMapIndex;
+  return getEndDetailMaps();
 }
 
 const MapScreen_ex::geo_map* MapScreen_T4::getMaps()
@@ -281,6 +400,14 @@ void MapScreen_T4::copyFullScreenSpriteToDisplay(TFT_eSprite& sprite)
 void MapScreen_T4::fillScreen(int colour)
 {
   _scratchPadSprite->fillSprite(colour);
+  if (_debugString[0] != '\0')
+  {
+    _scratchPadSprite->setCursor(0,20);
+    _scratchPadSprite->setTextSize(2);
+    _scratchPadSprite->setTextColor(TFT_WHITE);
+    _scratchPadSprite->printToSprite(_debugString);
+    _debugString[0] = '\0';
+  }
   copyFullScreenSpriteToDisplay(*_scratchPadSprite);
 }
 
@@ -332,9 +459,13 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   }
 
   if (_nearestFeatureDistance < 5)
+  {
     sprite.printf("At %s",nearestLabelMinusCode);
+  }
   else if (_nearestFeatureDistance < 12)
+  {
     sprite.printf("Near to %s (%.0f m)",nearestLabelMinusCode, _nearestFeatureDistance);
+  }
 
   sprite.setCursor(450, 417);
 
@@ -386,79 +517,101 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
 // This needs customising for the T4 maps. Currently switches when within 30 pixels of screen edge.
 const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_ex::pixel loc, const MapScreen_ex::geo_map* thisMap)
 {
+  //sprintf(_debugString,"Enter getNextMapByPixelLocation"); fillScreen(TFT_BLACK); delay(1000);
+
   const MapScreen_ex::geo_map* nextMap = thisMap;
 
-  if (thisMap == _allLakeMap)
-    return _allLakeMap;
+  if (thisMap == s_maps+getAllMapIndex())
+    return thisMap;
 
-  if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
+  if (_location == e_wraysbury_location || _location == e_other_location)
   {
-    nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
-    _zoom = _prevZoom;
+    if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
+    {
+      nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
+      _zoom = _prevZoom;
+    }
+    else if (thisMap == _NMap)   // go right from 0 to 1
+    {
+      if (isPixelInCanoeZone(loc, *thisMap))
+      {
+        _prevZoom=_zoom;
+        _zoom = 1;
+        nextMap = _canoeZoneMap;
+      }
+      else if (isPixelInSubZone(loc, *thisMap))
+      {
+        _prevZoom=_zoom;
+        _zoom = 1;
+        nextMap = _subZoneMap;
+      }
+      else if (loc.y >= 370)
+      {
+        nextMap=_WMap;
+      }
+    }
+    else if (thisMap == _WMap)
+    { 
+      if (isPixelInCanoeZone(loc, *thisMap))
+      {
+        _prevZoom=_zoom;
+        _zoom = 1;
+        nextMap = _canoeZoneMap;
+      }
+      else if (isPixelInSubZone(loc, *thisMap))
+      {
+        _prevZoom=_zoom;
+        _zoom = 1;
+        nextMap = _subZoneMap;
+      }
+      else if (loc.x >= 570 || loc.y >= 420 )
+      {
+        nextMap=_SWMap;
+      }
+      else if (loc.y <= 30)
+      {
+        nextMap=_NMap;
+      }
+    }
+    else if (thisMap == _SWMap)
+    {
+      if (loc.x >= 570 || loc.y >= 420)
+        nextMap=_SMap;
+      else if (loc.x <= 1 || loc.y <= 30)
+        nextMap=_WMap;          // go left from 2 to 1
+    }
+    else if (thisMap == _SMap)
+    {
+      if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
+        nextMap = _SWMap;
+      else if (loc.x >= 570 || loc.y >= 420)
+        nextMap = _SEMap;
+    }
+    else if (thisMap == _SEMap)
+    {
+      if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
+        nextMap = _SMap;
+  //    else if (loc.x >= 570 || loc.y >= 420)
+  //      nextMap = _SEMap;
+    }
   }
-  else if (thisMap == _NMap)   // go right from 0 to 1
+  else
   {
-    if (isPixelInCanoeZone(loc, *thisMap))
+    if (_location == e_home_location)
     {
-      _prevZoom=_zoom;
-      _zoom = 1;
-      nextMap = _canoeZoneMap;
+      nextMap = s_maps+getFirstDetailMapIndex();
     }
-    else if (isPixelInSubZone(loc, *thisMap))
+    else if (_location == e_vobster_location)
     {
-      _prevZoom=_zoom;
-      _zoom = 1;
-      nextMap = _subZoneMap;
+      nextMap = s_maps+getFirstDetailMapIndex();
     }
-    else if (loc.y >= 370)
+    else
     {
-      nextMap=_WMap;
+      nextMap == s_maps+getAllMapIndex();
     }
   }
-  else if (thisMap == _WMap)
-  { 
-    if (isPixelInCanoeZone(loc, *thisMap))
-    {
-      _prevZoom=_zoom;
-      _zoom = 1;
-      nextMap = _canoeZoneMap;
-    }
-    else if (isPixelInSubZone(loc, *thisMap))
-    {
-      _prevZoom=_zoom;
-      _zoom = 1;
-      nextMap = _subZoneMap;
-    }
-    else if (loc.x >= 570 || loc.y >= 420 )
-    {
-      nextMap=_SWMap;
-    }
-    else if (loc.y <= 30)
-    {
-      nextMap=_NMap;
-    }
-  }
-  else if (thisMap == _SWMap)
-  {
-    if (loc.x >= 570 || loc.y >= 420)
-      nextMap=_SMap;
-    else if (loc.x <= 1 || loc.y <= 30)
-      nextMap=_WMap;          // go left from 2 to 1
-  }
-  else if (thisMap == _SMap)
-  {
-    if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
-      nextMap = _SWMap;
-    else if (loc.x >= 570 || loc.y >= 420)
-      nextMap = _SEMap;
-  }
-  else if (thisMap == _SEMap)
-  {
-    if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
-      nextMap = _SMap;
-//    else if (loc.x >= 570 || loc.y >= 420)
-//      nextMap = _SEMap;
-  }
+
+  //sprintf(_debugString,"nextMap = %i", nextMap-s_maps); fillScreen(TFT_BROWN); delay(1000);
 
   return nextMap;
 }
