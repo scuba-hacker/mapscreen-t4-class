@@ -183,6 +183,9 @@ MapScreen_T4::MapScreen_T4(TFT_eSPI& tft, LilyGo_AMOLED& lilygoT3) : MapScreen_e
 
 void MapScreen_T4::initFirstAndEndWaypointsIndices()
 {
+  _firstWaypointIndex = 0;
+  _endWaypointsIndex = WraysburyWaypoints::getWaypointsCount();
+/*
   switch (_location)
   {
     case e_vobster_location:
@@ -207,6 +210,7 @@ void MapScreen_T4::initFirstAndEndWaypointsIndices()
       _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
       break;
   }
+*/
 }
 
 // de-dupe later
@@ -215,63 +219,74 @@ const double uninitialisedLongitude = 0.0;
 
 void MapScreen_T4::setLocationLatLong(double lat, double lng)
 {
-  bool override = false;
+  bool overrideToVobster = false;
   
   USB_SERIAL.println("Start: setLocationLatLong");
+
+  const MapScreen_ex::geo_map* m = nullptr;
+
+  locations previousLocation = _location;
 
   if (lat == uninitialisedLatitude && lng == uninitialisedLongitude)
   {
     USB_SERIAL.println("Matched on Uninitialised Location");
     _location = e_uninitialised_location;
-    USB_SERIAL.println("End: setLocationLatLong");
-    return;
-  }
-
-  const MapScreen_ex::geo_map* m = s_maps+_allLake_WraysburyMapIndex;
-  if (override)
-  {
-    USB_SERIAL.println("Overriden Location to Vobster");
-    _location = e_vobster_location;
   }
   else
   {
-    if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
-        lat > m->mapLatitudeBottom) // need latitudeTop reference
+    const double fixedLatitudeUpperBoundDelta = 0.1; // arbitrary to make a bounding box.
+
+    m = s_maps+_allLake_WraysburyMapIndex;
+    if (overrideToVobster)
     {
-          USB_SERIAL.println("Matched On Wraysbury Location");
-        _location = e_wraysbury_location;
+      USB_SERIAL.println("Overriden Location to Vobster");
+      _location = e_vobster_location;
     }
     else
     {
-      m = s_maps+_homeAllMapIndex;
-
       if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
-            lat > m->mapLatitudeBottom) // need latitudeTop reference
+          lat > m->mapLatitudeBottom && lat < m->mapLatitudeBottom+fixedLatitudeUpperBoundDelta)
       {
-        USB_SERIAL.println("Matched On Home Location");
-        _location = e_home_location;
+            USB_SERIAL.println("Matched On Wraysbury Location");
+          _location = e_wraysbury_location;
       }
       else
       {
-        // skipped home location
-        USB_SERIAL.println("Skipped Home Location");
-        USB_SERIAL.printf("Lat: %f Long: %f,  home-bounds: %f, %f, %f\n", lat, lng, m->mapLongitudeLeft, m->mapLongitudeRight, m->mapLatitudeBottom);
-
-        m = s_maps+_vobsterAllLakeMapIndex;
+        m = s_maps+_homeAllMapIndex;    // test for home location
 
         if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
-            lat > m->mapLatitudeBottom) // need latitudeTop reference
+              lat > m->mapLatitudeBottom && lat < m->mapLatitudeBottom+fixedLatitudeUpperBoundDelta)
         {
-          USB_SERIAL.println("Matched On Vobster Location");
-          _location = e_vobster_location;
+          USB_SERIAL.println("Matched On Home Location");
+          _location = e_home_location;
         }
         else
         {
-          USB_SERIAL.println("Matched On Other Location");
-          _location = e_other_location;   // ********* out of range of all *********
+          USB_SERIAL.println("Skipped Home Location");
+          USB_SERIAL.printf("Lat: %f Long: %f,  home-bounds: %f, %f, %f\n", lat, lng, m->mapLongitudeLeft, m->mapLongitudeRight, m->mapLatitudeBottom);
+
+          m = s_maps+_vobsterAllLakeMapIndex; // test for vobster location
+
+          if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+              lat > m->mapLatitudeBottom && lat < m->mapLatitudeBottom+fixedLatitudeUpperBoundDelta)
+          {
+            USB_SERIAL.println("Matched On Vobster Location");
+            _location = e_vobster_location;
+          }
+          else
+          {
+            USB_SERIAL.println("Matched On Other Location");
+            _location = e_other_location;   // ********* out of range of all *********
+          }
         }
       }
     }
+  }
+
+  if (previousLocation != _location)
+  {
+    const bool clearToBlack=false;
+    clearMap(clearToBlack);  // force a map redraw based on new location.
   }
 
   initFirstAndEndWaypointsIndices();
@@ -279,8 +294,6 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
   initExitWaypoints();
 
 //  //sprintf(_debugString,"exitwaycount %i",_exitWaypointCount); fillScreen(TFT_BROWN); delay(1000);
-
-  _locationInitialised = true;
 
   USB_SERIAL.println("End: setLocationLatLong");
 }
@@ -592,11 +605,6 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 
   USB_SERIAL.printf("Location: %s\n",getLocationName());
 
-  if (thisMap == s_maps+getAllMapIndex())
-  {
-    USB_SERIAL.println("getNextMapByPixelLocation: staying on ALL map");
-    return thisMap;
-  }
   
   USB_SERIAL.println("getNextMapByPixelLocation: not ALL Map");
 

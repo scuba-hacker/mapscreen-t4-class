@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define STUBOUT
+//#define STUBOUT
 
 #ifdef STUBOUT
 extern const uint16_t lily_wraysbury_N[] = {
