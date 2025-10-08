@@ -262,7 +262,6 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
         }
         else
         {
-          USB_SERIAL.println("Skipped Home Location");
           USB_SERIAL.printf("Lat: %f Long: %f,  home-bounds: %f, %f, %f\n", lat, lng, m->mapLongitudeLeft, m->mapLongitudeRight, m->mapLatitudeBottom);
 
           m = s_maps+_vobsterAllLakeMapIndex; // test for vobster location
@@ -285,8 +284,10 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
 
   if (previousLocation != _location)
   {
+    USB_SERIAL.printf("Location change triggers clearMap() %s to %s\n",getLocationName(previousLocation),getLocationName(_location));
     const bool clearToBlack=false;
     clearMap(clearToBlack);  // force a map redraw based on new location.
+
   }
 
   initFirstAndEndWaypointsIndices();
@@ -542,11 +543,11 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
 
   if (_nearestFeatureDistance < 5)
   {
-    sprite.printf("At %s",nearestLabelMinusCode);
+    sprite.printf("%.0fm At %s",_depth, nearestLabelMinusCode);
   }
   else if (_nearestFeatureDistance < 12)
   {
-    sprite.printf("Near to %s (%.0f m)",nearestLabelMinusCode, _nearestFeatureDistance);
+    sprite.printf("%.0fm Near to %s (%.0f m)",_depth, nearestLabelMinusCode, _nearestFeatureDistance);
   }
 
   sprite.setCursor(450, 417);
@@ -603,7 +604,7 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 
   const MapScreen_ex::geo_map* nextMap = thisMap;
 
-  USB_SERIAL.printf("Location: %s\n",getLocationName());
+  USB_SERIAL.printf("Location: %s\n",getLocationName(_location));
 
   
   USB_SERIAL.println("getNextMapByPixelLocation: not ALL Map");

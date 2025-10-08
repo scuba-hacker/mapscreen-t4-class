@@ -26,6 +26,7 @@ class MapScreen_T4 : public MapScreen_ex
         float _humidity = 0.0;
         float _lidarDistance = 0.0;
         float _prevLidarDistance = 0.0;
+        float _depth = 0.0;
 
         LilyGo_AMOLED& _amoled;
     
@@ -108,10 +109,11 @@ class MapScreen_T4 : public MapScreen_ex
         void testAndDisplayScale();
         void measureScale(double requiredDistance, const MapScreen_ex::geo_map* featureMap);
 
-        void setHumidityAndTemp(float goProCaseHumidity, float goProCaseTemperature)
+        void setHumidityTempDepth(float goProCaseHumidity, float goProCaseTemperature, float depth)
         {
             _temperature = goProCaseTemperature;
             _humidity = goProCaseHumidity;
+            _depth = depth;
         }
 
         void setLidarDistance(float distance)
