@@ -1,5 +1,16 @@
 #include <stdint.h>
 
+#define STUBOUT
+
+#ifdef STUBOUT
+extern const uint16_t lily_all_other_areas_All[] = {
+// w,h:1,1
+0x14AF
+};
+
+#else
+
+
 extern const uint16_t lily_all_other_areas_All[] = {
 // w,h:600,450
 0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,
@@ -33753,3 +33764,5 @@ extern const uint16_t lily_all_other_areas_All[] = {
 0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,
 0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,0x5CEF,
 };
+
+#endif
