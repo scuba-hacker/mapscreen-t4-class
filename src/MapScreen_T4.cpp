@@ -607,103 +607,113 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 {
   //sprintf(_debugString,"Enter getNextMapByPixelLocation"); fillScreen(TFT_BLACK); delay(1000);
 
+  USB_SERIAL.println(">>> MapScreen_T4::getNextMapByPixelLocation CALLED");
+
   const MapScreen_ex::geo_map* nextMap = thisMap;
 
-  USB_SERIAL.printf("Location: %s\n",getLocationName(_location));
+  USB_SERIAL.printf("Location: %s isAllLakeShown=%d\n",getLocationName(_location), isAllLakeShown());
 
-  
-  USB_SERIAL.println("getNextMapByPixelLocation: not ALL Map");
-
-  if (_location == e_wraysbury_location)
+  // Check if showing all lake map first
+  if (isAllLakeShown())
   {
-    if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
-    {
-      nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
-      _zoom = _prevZoom;
-    }
-    else if (thisMap == _NMap)   // go right from 0 to 1
-    {
-      if (isPixelInCanoeZone(loc, *thisMap))
-      {
-        _prevZoom=_zoom;
-        _zoom = 1;
-        nextMap = _canoeZoneMap;
-      }
-      else if (isPixelInSubZone(loc, *thisMap))
-      {
-        _prevZoom=_zoom;
-        _zoom = 1;
-        nextMap = _subZoneMap;
-      }
-      else if (loc.y >= 370)
-      {
-        nextMap=_WMap;
-      }
-    }
-    else if (thisMap == _WMap)
-    { 
-      if (isPixelInCanoeZone(loc, *thisMap))
-      {
-        _prevZoom=_zoom;
-        _zoom = 1;
-        nextMap = _canoeZoneMap;
-      }
-      else if (isPixelInSubZone(loc, *thisMap))
-      {
-        _prevZoom=_zoom;
-        _zoom = 1;
-        nextMap = _subZoneMap;
-      }
-      else if (loc.x >= 570 || loc.y >= 420 )
-      {
-        nextMap=_SWMap;
-      }
-      else if (loc.y <= 30)
-      {
-        nextMap=_NMap;
-      }
-    }
-    else if (thisMap == _SWMap)
-    {
-      if (loc.x >= 570 || loc.y >= 420)
-        nextMap=_SMap;
-      else if (loc.x <= 1 || loc.y <= 30)
-        nextMap=_WMap;          // go left from 2 to 1
-    }
-    else if (thisMap == _SMap)
-    {
-      if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
-        nextMap = _SWMap;
-      else if (loc.x >= 570 || loc.y >= 420)
-        nextMap = _SEMap;
-    }
-    else if (thisMap == _SEMap)
-    {
-      if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
-        nextMap = _SMap;
-  //    else if (loc.x >= 570 || loc.y >= 420)
-  //      nextMap = _SEMap;
-    }
+    USB_SERIAL.println("getNextMapByPixelLocation: ALL Map");
+    nextMap = s_maps + getAllMapIndex();
   }
   else
   {
-    if (_location == e_home_location)
+    USB_SERIAL.println("getNextMapByPixelLocation: not ALL Map");
+
+    if (_location == e_wraysbury_location)
     {
-      nextMap = s_maps+getFirstDetailMapIndex();
-    }
-    else if (_location == e_vobster_location)
-    {
-      nextMap = s_maps+getFirstDetailMapIndex();
-    }
-    else if (_location == e_other_location)
-    {
-      nextMap = s_maps+getFirstDetailMapIndex();
+      if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
+      {
+        nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
+        _zoom = _prevZoom;
+      }
+      else if (thisMap == _NMap)   // go right from 0 to 1
+      {
+        if (isPixelInCanoeZone(loc, *thisMap))
+        {
+          _prevZoom=_zoom;
+          _zoom = 1;
+          nextMap = _canoeZoneMap;
+        }
+        else if (isPixelInSubZone(loc, *thisMap))
+        {
+          _prevZoom=_zoom;
+          _zoom = 1;
+          nextMap = _subZoneMap;
+        }
+        else if (loc.y >= 370)
+        {
+          nextMap=_WMap;
+        }
+      }
+      else if (thisMap == _WMap)
+      { 
+        if (isPixelInCanoeZone(loc, *thisMap))
+        {
+          _prevZoom=_zoom;
+          _zoom = 1;
+          nextMap = _canoeZoneMap;
+        }
+        else if (isPixelInSubZone(loc, *thisMap))
+        {
+          _prevZoom=_zoom;
+          _zoom = 1;
+          nextMap = _subZoneMap;
+        }
+        else if (loc.x >= 570 || loc.y >= 420 )
+        {
+          nextMap=_SWMap;
+        }
+        else if (loc.y <= 30)
+        {
+          nextMap=_NMap;
+        }
+      }
+      else if (thisMap == _SWMap)
+      {
+        if (loc.x >= 570 || loc.y >= 420)
+          nextMap=_SMap;
+        else if (loc.x <= 1 || loc.y <= 30)
+          nextMap=_WMap;          // go left from 2 to 1
+      }
+      else if (thisMap == _SMap)
+      {
+        if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
+          nextMap = _SWMap;
+        else if (loc.x >= 570 || loc.y >= 420)
+          nextMap = _SEMap;
+      }
+      else if (thisMap == _SEMap)
+      {
+        if  (loc.x <= 30 || loc.y <= 30) // go left from 3 to 2
+          nextMap = _SMap;
+    //    else if (loc.x >= 570 || loc.y >= 420)
+    //      nextMap = _SEMap;
+      }
     }
     else
     {
-      nextMap == s_maps+getAllMapIndex();
+      if (_location == e_home_location)
+      {
+        nextMap = s_maps+getFirstDetailMapIndex();
+      }
+      else if (_location == e_vobster_location)
+      {
+        nextMap = s_maps+getFirstDetailMapIndex();
+      }
+      else if (_location == e_other_location)
+      {
+        nextMap = s_maps+getFirstDetailMapIndex();
+      }
+      else
+      {
+        nextMap = s_maps+getAllMapIndex();
+      }
     }
-  }
+  }  // Close the else block from isAllLakeShown()
 
   //sprintf(_debugString,"nextMap = %i", nextMap-s_maps); fillScreen(TFT_BROWN); delay(1000);
 
