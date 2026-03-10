@@ -480,6 +480,11 @@ void MapScreen_T4::copyFullScreenSpriteToDisplay(TFT_eSprite& sprite)
     _amoled.pushColors(0,0,getTFTWidth(),getTFTHeight(),reinterpret_cast<uint16_t*>(sprite.getPointer()));
 }
 
+void MapScreen_T4::copyFullScreenBufferToDisplay(uint16_t* buffer)
+{
+    _amoled.pushColors(0,0,getTFTWidth(),getTFTHeight(),buffer);
+}
+
 void MapScreen_T4::fillScreen(int colour)
 {
   _scratchPadSprite->fillSprite(colour);
