@@ -548,11 +548,13 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
 
   if (_nearestFeatureDistance < 5)
   {
-    sprite.printf("%.1fm At %s",_depth, nearestLabelMinusCode);
+    sprite.printf("At %s %.0fm",nearestLabelMinusCode, _nearestFeatureDistance);
+//    sprite.printf("%.1fm At %s",_depth, nearestLabelMinusCode);
   }
   else if (_nearestFeatureDistance < 12)
   {
-    sprite.printf("%.1fm Near to %s (%.0f m)",_depth, nearestLabelMinusCode, _nearestFeatureDistance);
+//    sprite.printf("%.1fm Near to %s (%.0f m)",_depth, nearestLabelMinusCode, _nearestFeatureDistance);
+    sprite.printf("Near %s %.0fm", nearestLabelMinusCode,_nearestFeatureDistance);
   }
 
   sprite.setCursor(450, 417);
