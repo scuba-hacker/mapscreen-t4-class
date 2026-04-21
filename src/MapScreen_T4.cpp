@@ -8,6 +8,9 @@
 
 #include <LilyGo_AMOLED.h>
 
+
+#include "fonts/NotoSansMonoSCB20.h"
+#include "fonts/NotoSansBold15.h"
 #include "fonts/NotoSansBold36.h"
 #include "fonts/Final_Frontier_28.h"
 
@@ -526,13 +529,26 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
     targetLabelMinusCode=label;
   }
 - 
-  sprite.printf("%.0f%cm to %s [%.0fD]",scaledDistance, distanceUnitPrefix, targetLabelMinusCode, _course);
+  sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode, _course);
+  sprite.setTextColor(TFT_DARKGREEN);
+  sprite.printf("%.0f",_course);
+  int16_t offset = 8;
+  sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() - offset);
+  getCompositeSprite().loadFont(Final_Frontier_28);
+  sprite.printf("o");
+  getCompositeSprite().loadFont(NotoSansBold36);
+  sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() + offset);
+  sprite.printf("\n");
+ 
+  sprite.setTextColor(TFT_NAVY);
+  sprite.printf("%.0fm",_depth);
   
   sprite.setCursor(555,20);
 
   char x = (isAllLakeShown() ? ' ' : 'x');
   char zoom = (isAllLakeShown() ? ' ' :  '0' + _zoom);
 
+  sprite.setTextColor(TFT_DARKGREY);
   sprite.printf("%c%c",x, zoom);
 
   sprite.setCursor(0,375);
@@ -542,19 +558,17 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   if (nearestLabelMinusCode)
     nearestLabelMinusCode++;
   else
-  {
     nearestLabelMinusCode=WraysburyWaypoints::waypoints[_nearestFeatureIndex]._label;
-  }
-
+    
   if (_nearestFeatureDistance < 5)
   {
-    sprite.printf("At %s %.0fm",nearestLabelMinusCode, _nearestFeatureDistance);
+    sprite.printf("%.0fm At %s",_nearestFeatureDistance, nearestLabelMinusCode);
 //    sprite.printf("%.1fm At %s",_depth, nearestLabelMinusCode);
   }
   else if (_nearestFeatureDistance < 12)
   {
 //    sprite.printf("%.1fm Near to %s (%.0f m)",_depth, nearestLabelMinusCode, _nearestFeatureDistance);
-    sprite.printf("Near %s %.0fm", nearestLabelMinusCode,_nearestFeatureDistance);
+    sprite.printf("%.0fm Near %s", _nearestFeatureDistance, nearestLabelMinusCode);
   }
 
   sprite.setCursor(450, 417);
