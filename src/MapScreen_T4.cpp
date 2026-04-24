@@ -528,8 +528,8 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   {
     targetLabelMinusCode=label;
   }
-- 
-  sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode, _course);
+
+  sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
   sprite.setTextColor(TFT_DARKGREEN);
   sprite.printf("%.0f",_course);
   int16_t offset = 8;
@@ -641,45 +641,16 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 
     if (_location == e_wraysbury_location)
     {
-      if ((thisMap == _canoeZoneMap || thisMap == _subZoneMap) && isPixelOutsideScreenExtent(loc))
+      if (thisMap == _NMap)   // go right from 0 to 1
       {
-        nextMap = (thisMap == _canoeZoneMap ? _NMap : _SWMap);
-        _zoom = _prevZoom;
-      }
-      else if (thisMap == _NMap)   // go right from 0 to 1
-      {
-        if (isPixelInCanoeZone(loc, *thisMap))
-        {
-          _prevZoom=_zoom;
-          _zoom = 1;
-          nextMap = _canoeZoneMap;
-        }
-        else if (isPixelInSubZone(loc, *thisMap))
-        {
-          _prevZoom=_zoom;
-          _zoom = 1;
-          nextMap = _subZoneMap;
-        }
-        else if (loc.y >= 370)
+        if (loc.y >= 370)
         {
           nextMap=_WMap;
         }
       }
       else if (thisMap == _WMap)
       { 
-        if (isPixelInCanoeZone(loc, *thisMap))
-        {
-          _prevZoom=_zoom;
-          _zoom = 1;
-          nextMap = _canoeZoneMap;
-        }
-        else if (isPixelInSubZone(loc, *thisMap))
-        {
-          _prevZoom=_zoom;
-          _zoom = 1;
-          nextMap = _subZoneMap;
-        }
-        else if (loc.x >= 570 || loc.y >= 420 )
+        if (loc.x >= 570 || loc.y >= 420 )
         {
           nextMap=_SWMap;
         }
@@ -742,14 +713,7 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
 const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 1> MapScreen_T4::boundingBoxesCanoe = {{{{62,51},{79,71},{*MapScreen_T4::_NMap}}}};
 bool MapScreen_T4::isPixelInCanoeZone(const MapScreen_ex::pixel loc, const MapScreen_ex::geo_map& thisMap) const
 {
-  return false; // temp - remove when new bounding box pixels are coded above
-
-  for (auto& box : boundingBoxesCanoe)
-  {
-    if (box.withinBox(loc, thisMap))
-      return true;
-  }
-
+  // not used for T4 Display
   return false;
 }
 
@@ -763,13 +727,6 @@ const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 2> MapScreen_T4::bound
 
 bool MapScreen_T4::isPixelInSubZone(const MapScreen_ex::pixel loc, const geo_map& thisMap) const
 {
-  return false;  // temp - remove when new bounding box pixels are coded above
-
-  for (auto& box : boundingBoxesSub)
-  {
-    if (box.withinBox(loc, thisMap))
-      return true;
-  }
-
+  // not used for T4 Display
   return false;
 }
