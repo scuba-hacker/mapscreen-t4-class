@@ -535,10 +535,10 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   int16_t offset = 8;
   sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() - offset);
   getCompositeSprite().loadFont(Final_Frontier_28);
-  sprite.printf("o");
+  sprite.print("o");
   getCompositeSprite().loadFont(NotoSansBold36);
   sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() + offset);
-  sprite.printf("\n");
+  sprite.print("\n");
  
   sprite.setTextColor(TFT_NAVY);
   sprite.printf("%.0fm",_depth);
