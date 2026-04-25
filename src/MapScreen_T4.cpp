@@ -290,14 +290,7 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
     USB_SERIAL.printf("Location change triggers clearMap() %s to %s\n",getLocationName(previousLocation),getLocationName(_location));
     const bool clearToBlack=false;
     clearMap(clearToBlack);  // force a map redraw based on new location.
-
   }
-
-  initFirstAndEndWaypointsIndices();
-  
-  initExitWaypoints();
-
-//  //sprintf(_debugString,"exitwaycount %i",_exitWaypointCount); fillScreen(TFT_BROWN); delay(1000);
 
   USB_SERIAL.println("End: setLocationLatLong");
 }
@@ -425,6 +418,9 @@ void MapScreen_T4::initMapScreen()
 
   if (&getBaseMapSprite() != &getCompositeSprite())
     getBaseMapSprite().loadFont(Final_Frontier_28);
+
+  initFirstAndEndWaypointsIndices();
+  initExitWaypoints();
 }
 
 bool MapScreen_T4::useBaseMapCache() const
@@ -502,12 +498,19 @@ void MapScreen_T4::fillScreen(int colour)
   copyFullScreenSpriteToDisplay(*_scratchPadSprite);
 }
 
-// This needs customising for the T4 maps. Writes text to the canoe/sub zoomed in zones
 void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex::geo_map& map)
 {
+  const uint16_t TOP_TITLE_COLOUR = TFT_DARKGREY, BOTTOM_TITLE_COLOUR = TFT_DARKGREY, ZOOM_COLOUR = TFT_DARKGREY;
+  const uint16_t HEADING_COLOUR = TFT_DARKGREEN, COURSE_COLOUR = TFT_MAROON, DEPTH_COLOUR = TFT_NAVY;
+  const uint16_t TEMP_COLOUR = TFT_NAVY;
+  const uint16_t HUMID_LOW_COLOUR = TFT_DARKGREEN, HUMID_MED_COLOUR = TFT_GREENYELLOW;
+  const uint16_t HUMID_HIGH_COLOUR = TFT_ORANGE, HUMID_V_HIGH_COLOUR = TFT_RED;
+  const uint16_t TEMP_HUMID_ERROR_COLOUR = TFT_RED;
+  const uint16_t SCALE_COLOUR = TFT_MAGENTA;
+
   sprite.setCursor(0,20);
   sprite.setTextSize(3);
-  sprite.setTextColor(TFT_DARKGREY);
+  sprite.setTextColor(TOP_TITLE_COLOUR);
   double scaledDistance = _targetDistance;
   char distanceUnitPrefix = ' ';
   if (_targetDistance >= 1000)
@@ -517,30 +520,31 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   }
 
   const char unknownWaypoint[] = "??? Unknown";
-  
   const char* label = (_targetWaypointIndex != -1 ? WraysburyWaypoints::waypoints[_targetWaypointIndex]._label : unknownWaypoint);
-
   const char* targetLabelMinusCode = strstr(label," ");
 
   if (targetLabelMinusCode)
     targetLabelMinusCode++;
   else
-  {
     targetLabelMinusCode=label;
-  }
 
   sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
-  sprite.setTextColor(TFT_DARKGREEN);
-  sprite.printf("%.0f",_course);
+  sprite.setTextColor(HEADING_COLOUR);
+  sprite.printf("%.0f",_heading);
+
   int16_t offset = 8;
-  sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() - offset);
-  getCompositeSprite().loadFont(Final_Frontier_28);
-  sprite.print("o");
-  getCompositeSprite().loadFont(NotoSansBold36);
-  sprite.setCursor(sprite.getCursorX(), sprite.getCursorY() + offset);
+  uint16_t degrees_heading_x = sprite.getCursorX();
+  uint16_t degrees_heading_y = sprite.getCursorY() - offset;
+
+  sprite.setTextColor(COURSE_COLOUR);
+  sprite.printf("\n%.0f",_course);
+
+  uint16_t degrees_course_x = sprite.getCursorX();
+  uint16_t degrees_course_y = sprite.getCursorY() - offset;
+
   sprite.print("\n");
  
-  sprite.setTextColor(TFT_NAVY);
+  sprite.setTextColor(DEPTH_COLOUR);
   sprite.printf("%.0fm",_depth);
   
   sprite.setCursor(555,20);
@@ -548,11 +552,61 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   char x = (isAllLakeShown() ? ' ' : 'x');
   char zoom = (isAllLakeShown() ? ' ' :  '0' + _zoom);
 
-  sprite.setTextColor(TFT_DARKGREY);
+  sprite.setTextColor(ZOOM_COLOUR);
   sprite.printf("%c%c",x, zoom);
 
-  sprite.setCursor(0,375);
+// OLD BOTTOM LEFT UP ONE ROW OF WHERE YOU ARE NEAR TEXT: sprite.setCursor(0,375);
 
+
+// OLD BOTTOM RIGHT POSITION OF TEMP AND HUMIDITY: sprite.setCursor(450, 417);
+  uint16_t degrees_temp_x=0,degrees_temp_y=0;
+
+  uint16_t celcius_x_offset = 8;
+
+  sprite.setCursor(0, 345);
+  if(_temperature != -1.0 && _humidity != -1.0)
+  {
+    sprite.setTextColor(TEMP_COLOUR);
+    sprite.printf("%.0f",_temperature);
+    degrees_temp_x = sprite.getCursorX();
+    degrees_temp_y = sprite.getCursorY() - offset;
+    sprite.setCursor(degrees_temp_x + celcius_x_offset, sprite.getCursorY()); 
+    sprite.print(" C\n");
+
+    if (_humidity > 85)
+        sprite.setTextColor(HUMID_V_HIGH_COLOUR);
+    else if (_humidity > 80)
+        sprite.setTextColor(HUMID_HIGH_COLOUR);
+    else if (_humidity > 75)
+        sprite.setTextColor(HUMID_MED_COLOUR);
+    else
+        sprite.setTextColor(HUMID_LOW_COLOUR);
+
+    sprite.printf("%.0f%%\n",_humidity);
+  }
+  else
+  {
+    sprite.setTextColor(TEMP_HUMID_ERROR_COLOUR);
+    sprite.printf("ERROR\n");
+  }
+
+  uint16_t nearest_label_y = sprite.getCursorY();
+
+  getCompositeSprite().loadFont(Final_Frontier_28);
+  sprite.setCursor(degrees_heading_x, degrees_heading_y);
+  sprite.setTextColor(HEADING_COLOUR);
+  sprite.print("o");
+  sprite.setCursor(degrees_course_x, degrees_course_y);
+  sprite.setTextColor(COURSE_COLOUR);
+  sprite.print("o");
+  sprite.setCursor(degrees_temp_x, degrees_temp_y);
+  sprite.setTextColor(TEMP_COLOUR);
+  sprite.print("o");
+  getCompositeSprite().loadFont(NotoSansBold36);
+
+  sprite.setCursor(0, nearest_label_y);
+
+  sprite.setTextColor(BOTTOM_TITLE_COLOUR);
   const char* nearestLabelMinusCode = strstr(WraysburyWaypoints::waypoints[_nearestFeatureIndex]._label," ");
 
   if (nearestLabelMinusCode)
@@ -563,36 +617,10 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   if (_nearestFeatureDistance < 5)
   {
     sprite.printf("%.0fm At %s",_nearestFeatureDistance, nearestLabelMinusCode);
-//    sprite.printf("%.1fm At %s",_depth, nearestLabelMinusCode);
   }
   else if (_nearestFeatureDistance < 12)
   {
-//    sprite.printf("%.1fm Near to %s (%.0f m)",_depth, nearestLabelMinusCode, _nearestFeatureDistance);
     sprite.printf("%.0fm Near %s", _nearestFeatureDistance, nearestLabelMinusCode);
-  }
-
-  sprite.setCursor(450, 417);
-
-  if(_temperature != -1.0 && _humidity != -1.0)
-  {
-    sprite.setTextColor(TFT_NAVY);
-    sprite.printf("%.0fC ",_temperature);
-
-    if (_humidity > 85)
-        sprite.setTextColor(TFT_RED);
-    else if (_humidity > 80)
-        sprite.setTextColor(TFT_ORANGE);
-    else if (_humidity > 75)
-        sprite.setTextColor(TFT_GREENYELLOW);
-    else
-        sprite.setTextColor(TFT_DARKGREEN);
-
-    sprite.printf("%.0f%%",_humidity);
-  }
-  else
-  {
-    sprite.setTextColor(TFT_RED);
-    sprite.printf("ERROR");
   }
 
   sprite.setCursor(260,417);
