@@ -500,11 +500,16 @@ void MapScreen_T4::fillScreen(int colour)
 
 void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex::geo_map& map)
 {
-  const uint16_t TOP_TITLE_COLOUR = TFT_BLUE, BOTTOM_TITLE_COLOUR = TFT_VIOLET, ZOOM_COLOUR = TFT_DARKGREY;
-  const uint16_t HEADING_COLOUR = TFT_DARKGREEN, COURSE_COLOUR = TFT_MAROON, DEPTH_COLOUR = TFT_NAVY;
+  #define TFT_DARKERORANGE      0x82C0      /* 128, 90,   0 */
+  #define TFT_DARKORANGE        0xC420      /* 192, 135,   0 */
+
+  const uint16_t TOP_TITLE_COLOUR = TFT_BLUE, OCEANIC_TARGET_BEARING_COLOUR = TFT_BLUE;
+  const uint16_t BOTTOM_TITLE_COLOUR = TFT_VIOLET, ZOOM_COLOUR = TFT_DARKGREY;
+  const uint16_t HEADING_COLOUR = TFT_DARKORANGE, TARGET_HEADING_COLOUR = TFT_DARKGREEN, TARGET_DISTANCE_COLOUR = TFT_DARKGREEN;
+  const uint16_t COURSE_COLOUR = TFT_MAROON, DEPTH_COLOUR = TFT_NAVY;
   const uint16_t TEMP_COLOUR = TFT_NAVY;
   const uint16_t HUMID_LOW_COLOUR = TFT_DARKGREEN, HUMID_MED_COLOUR = TFT_GREENYELLOW;
-  const uint16_t HUMID_HIGH_COLOUR = TFT_ORANGE, HUMID_V_HIGH_COLOUR = TFT_RED;
+  const uint16_t HUMID_HIGH_COLOUR = TFT_DARKORANGE, HUMID_V_HIGH_COLOUR = TFT_RED;
   const uint16_t TEMP_HUMID_ERROR_COLOUR = TFT_RED;
   const uint16_t SCALE_COLOUR = TFT_MAGENTA;
 
@@ -529,12 +534,28 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
     targetLabelMinusCode=label;
 
   sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
-  sprite.setTextColor(HEADING_COLOUR);
-  sprite.printf("%.0f",_heading);
+
+  sprite.setTextColor(OCEANIC_TARGET_BEARING_COLOUR);
+  sprite.printf("%.0f",_targetBearing);
 
   int16_t offset = 8;
+  uint16_t degrees_oceanic_target_bearing_x = sprite.getCursorX();
+  uint16_t degrees_oceanic_target_bearing_y = sprite.getCursorY() - offset;
+
+  sprite.setTextColor(HEADING_COLOUR);
+  sprite.printf("\n%.0f",_heading);
+
   uint16_t degrees_heading_x = sprite.getCursorX();
   uint16_t degrees_heading_y = sprite.getCursorY() - offset;
+
+  sprite.setTextColor(TARGET_HEADING_COLOUR);
+  sprite.printf("\n%.0f",_targetHeadingFromMako);
+
+  uint16_t degrees_target_heading_x = sprite.getCursorX();
+  uint16_t degrees_target_heading_y = sprite.getCursorY() - offset;
+
+  sprite.setTextColor(TARGET_DISTANCE_COLOUR);
+  sprite.printf("\n%.0f%c",_targetDistanceFromMako,(_targetDistanceFromMako < 1000 ? 'm' : 'km'));
 
   sprite.setTextColor(COURSE_COLOUR);
   sprite.printf("\n%.0f",_course);
@@ -593,8 +614,14 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   uint16_t nearest_label_y = sprite.getCursorY();
 
   getCompositeSprite().loadFont(Final_Frontier_28);
+  sprite.setCursor(degrees_oceanic_target_bearing_x, degrees_oceanic_target_bearing_y);
+  sprite.setTextColor(OCEANIC_TARGET_BEARING_COLOUR);
+  sprite.print("o");
   sprite.setCursor(degrees_heading_x, degrees_heading_y);
   sprite.setTextColor(HEADING_COLOUR);
+  sprite.print("o");
+  sprite.setCursor(degrees_target_heading_x, degrees_target_heading_y);
+  sprite.setTextColor(TARGET_HEADING_COLOUR);
   sprite.print("o");
   sprite.setCursor(degrees_course_x, degrees_course_y);
   sprite.setTextColor(COURSE_COLOUR);
