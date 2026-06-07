@@ -29,7 +29,9 @@ class MapScreen_T4 : public MapScreen_ex
         float _depth = 0.0;
         float _course = 0.0;
         float _heading = 0.0;
-
+        float _targetHeading = 0.0;
+        float _targetDistance = 0.0;
+        
         LilyGo_AMOLED& _amoled;
     
         std::unique_ptr<TFT_eSprite> _scratchPadSprite;
@@ -122,6 +124,7 @@ class MapScreen_T4 : public MapScreen_ex
         void setDepth(float depth) { _depth = depth; }
         void setCourse(float course) { _course = course; }
         void setHeading(float heading) { _heading = heading; }
+        void setTargetDirection(float targetHeading, float targetDistance) {_targetHeading = targetHeading; _targetDistance = targetDistance; }
 
         void setLidarDistance(float distance)
         { 
