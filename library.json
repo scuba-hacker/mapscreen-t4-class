@@ -3,6 +3,6 @@
     {
         "mapscreen-ex-class": "https://github.com/scuba-hacker/mapscreen-ex-class",
         "SensorLib":     "lewisxhe/SensorLib @ 0.1.4",
-        "LilyGo-AMOLED-Series": "https://github.com/scuba-hacker/LilyGo-AMOLED-Series"
+       "LilyGo-AMOLED-Series": "https://github.com/scuba-hacker/LilyGo-AMOLED-Series#bring-up-to-date"
     }
 }
