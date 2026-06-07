@@ -517,12 +517,8 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   sprite.setTextSize(3);
   sprite.setTextColor(TOP_TITLE_COLOUR);
   double scaledDistance = _targetDistance;
-  char distanceUnitPrefix = ' ';
   if (_targetDistance >= 1000)
-  {
-    distanceUnitPrefix = 'k';
     scaledDistance = _targetDistance / 1000.0;
-  }
 
   const char unknownWaypoint[] = "??? Unknown";
   const char* label = (_targetWaypointIndex != -1 ? WraysburyWaypoints::waypoints[_targetWaypointIndex]._label : unknownWaypoint);
@@ -533,7 +529,7 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   else
     targetLabelMinusCode=label;
 
-  sprite.printf("%.0f%cm to %s\n",scaledDistance, distanceUnitPrefix, targetLabelMinusCode);
+  sprite.printf("%.0f%s to %s\n",scaledDistance, (_targetDistance < 1000 ? "m" : "km"), targetLabelMinusCode);
 
   sprite.setTextColor(OCEANIC_TARGET_BEARING_COLOUR);
   sprite.printf("%.0f",_targetBearing);
@@ -555,7 +551,12 @@ void MapScreen_T4::writeMapTitleToSprite(TFT_eSprite& sprite, const MapScreen_ex
   uint16_t degrees_target_heading_y = sprite.getCursorY() - offset;
 
   sprite.setTextColor(TARGET_DISTANCE_COLOUR);
-  sprite.printf("\n%.0f%c",_targetDistanceFromMako,(_targetDistanceFromMako < 1000 ? 'm' : 'km'));
+
+  double scaledTargetDistanceFromMako = _targetDistanceFromMako;
+  if (_targetDistanceFromMako >= 1000)
+    scaledTargetDistanceFromMako = _targetDistanceFromMako / 1000.0;
+
+  sprite.printf("\n%.0f%s",scaledTargetDistanceFromMako,(_targetDistanceFromMako < 1000 ? "m" : "km"));
 
   sprite.setTextColor(COURSE_COLOUR);
   sprite.printf("\n%.0f",_course);
