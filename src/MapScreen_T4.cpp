@@ -188,32 +188,6 @@ void MapScreen_T4::initFirstAndEndWaypointsIndices()
 {
   _firstWaypointIndex = 0;
   _endWaypointsIndex = WraysburyWaypoints::getWaypointsCount();
-/*
-  switch (_location)
-  {
-    case e_vobster_location:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexVobster(); 
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexVobster();
-      break;
-    case e_wraysbury_location:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexWraysbury();
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexWraysbury();
-      break;
-    case e_home_location:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
-      break;
-    case e_other_location:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexOtherAreas(); 
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexOtherAreas();
-      break;
-    case e_uninitialised_location:
-    default:
-      _firstWaypointIndex = WraysburyWaypoints::getStartIndexHome(); 
-      _endWaypointsIndex = WraysburyWaypoints::getEndWaypointIndexHome();
-      break;
-  }
-*/
 }
 
 // de-dupe later
