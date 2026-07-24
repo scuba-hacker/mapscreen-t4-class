@@ -332,8 +332,8 @@ void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& feat
         pixelsForDistance = 108; // worth checking
         break;
       case e_tapwood_location:
-        distanceToShow = 100;     // UPDATE THIS
-        pixelsForDistance = 108; // UPDATE THIS
+        distanceToShow = 100;
+        pixelsForDistance = 95; // correct 
         break;
       case e_other_location:  // assuming 2km width 'all' map
       default:

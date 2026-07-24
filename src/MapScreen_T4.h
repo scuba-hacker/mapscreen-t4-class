@@ -82,16 +82,29 @@ class MapScreen_T4 : public MapScreen_ex
 */
         static const MapScreenAttr s_mapT4Attr;
 
-        const int wraysbury10metrePixelScale = 29;
+        const int wraysbury10metrePixelScale = 29;  // correct
         const int home10metrePixelScale = 29;
         const int vobster10metrePixelScale = 29;
         const int default10metrePixelScale = 29;
+        const int tapwood10metrePixelScale = 24;    // correct
 
-        // MBJMBJ this will need to change
+        // MBJMBJ this needs to be updated for vobster
         int getPixelsFor10metres() const
         {
-            const bool wraysbury=true;
-            return (wraysbury ? wraysbury10metrePixelScale : default10metrePixelScale);
+            switch (_location)
+            {
+            case e_vobster_location:
+                return vobster10metrePixelScale;
+            case e_home_location:
+                return home10metrePixelScale;
+            case e_wraysbury_location:
+                return wraysbury10metrePixelScale;
+            case e_tapwood_location:
+                return tapwood10metrePixelScale;
+            case e_other_location:
+            default:
+                return default10metrePixelScale;
+            }
         }
 
     protected:
