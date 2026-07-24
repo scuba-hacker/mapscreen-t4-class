@@ -850,6 +850,11 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
             return nextMap;
           }
         }
+        else
+        {
+          nextMap = _tapCentre_Map;
+          return nextMap;
+        }
       }
       else if (_location == e_other_location)
       {
