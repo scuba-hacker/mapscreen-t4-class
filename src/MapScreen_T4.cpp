@@ -796,7 +796,7 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
             nextMap=_tapCentre_Map;
           }
           // from North to North West
-          else if (loc.x < 130)
+          else if (loc.x < 130 || loc.y > 410)
           {
             nextMap=_tapNW_Map;
           }
@@ -822,11 +822,15 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
               nextMap=_tapCentre_Map;
             }
           }
+          else if (loc.x > 330 && loc.y > 420)
+          {
+            nextMap=_tapCentre_Map;
+          }
         }
         else if (thisMap == _tapW_Map)
         {
           // From West to North West
-          if (loc.y > 475)
+          if (loc.x > 475 || loc.x > 380 && loc.y < 30)
           {
             nextMap=_tapNW_Map;
           }
