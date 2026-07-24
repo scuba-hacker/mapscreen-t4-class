@@ -60,8 +60,16 @@ class MapScreen_T4 : public MapScreen_ex
         static constexpr const MapScreen_ex::geo_map* _homeAllMap=s_maps+9;  static const uint8_t _homeAllMapIndex = 9;
         static constexpr const MapScreen_ex::geo_map* _vobsterCentreMap=s_maps+10;  static const uint8_t _vobsterCentreMapIndex = 10;
         static constexpr const MapScreen_ex::geo_map* _vobsterAllLakeMap=s_maps+11;  static const uint8_t _vobsterAllLakeMapIndex = 11;
-        static constexpr const MapScreen_ex::geo_map* _allOtherAreasCentreMap=s_maps+12;  static const uint8_t _allOtherAreasCentreMapIndex = 12;
-        static constexpr const MapScreen_ex::geo_map* _allOtherAreasAllMap=s_maps+13;  static const uint8_t _allOtherAreasAllMapIndex = 13;
+
+        static constexpr const MapScreen_ex::geo_map* _tapCentre_Map=s_maps+12;          static const uint8_t _tapwoodCentreMapIndex = 12;
+        static constexpr const MapScreen_ex::geo_map* _tapE_Map=s_maps+13;        static const uint8_t _tapwoodEMapIndex = 13;
+        static constexpr const MapScreen_ex::geo_map* _tapN_Map=s_maps+14;       static const uint8_t _tapwoodNMapIndex = 14;
+        static constexpr const MapScreen_ex::geo_map* _tapNW_Map=s_maps+15;        static const uint8_t _tapwoodNWMapIndex = 15;
+        static constexpr const MapScreen_ex::geo_map* _tapW_Map=s_maps+16;       static const uint8_t _tapwoodWMapMapIndex = 16;
+        static constexpr const MapScreen_ex::geo_map* _tapAllLakeMap=s_maps+17;  static const uint8_t _tapwoodAllLakeMapIndex = 17;
+
+        static constexpr const MapScreen_ex::geo_map* _allOtherAreasCentreMap=s_maps+18;  static const uint8_t _allOtherAreasCentreMapIndex = 18;
+        static constexpr const MapScreen_ex::geo_map* _allOtherAreasAllMap=s_maps+19;  static const uint8_t _allOtherAreasAllMapIndex = 19;
 
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 1> boundingBoxesCanoe;
         static const std::array<MapScreen_ex::MapScreen_ex::BoundingBox, 2> boundingBoxesSub;

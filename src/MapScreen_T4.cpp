@@ -30,6 +30,8 @@ extern const uint16_t lily_vobster_All[];
 extern const uint16_t lily_all_other_areas_Centre[];
 extern const uint16_t lily_all_other_areas_All[];
 
+extern const uint16_t lily_stub_map[];
+
 const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
 {
   [0] = { .mapData = lily_wraysbury_N, .png = "/maps/lily_wraysbury_N.png",.label="North", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -0.5503, .mapLongitudeRight = -0.5473, .mapLatitudeBottom = 51.4613}, // -0.5503,51.4613,-0.5473,51.4627
@@ -45,15 +47,37 @@ const MapScreen_ex::geo_map MapScreen_T4::s_maps[] =
   [10] = { .mapData = lily_vobster_Centre, .png = "/maps/lily_vobster_Centre.png",.label="Vobster",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.4255, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.24465}, // map top 51.2472  origianal bot = 51.2448
   [11] = { .mapData = lily_vobster_All, .png = "/maps/lily_vobster_All.png",.label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = -2.427, .mapLongitudeRight = -2.4202, .mapLatitudeBottom = 51.2447},  // map top 51.2479
 
-  // old bottom: 51.06601   last: 51.06511112 
-  [12] = { .mapData = lily_all_other_areas_Centre, .png = "/maps/lily_all_other_areas_Centre.png",.label="Out-To-Sea",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.269333, .mapLongitudeRight = 1.272333, .mapLatitudeBottom = 51.06538078},
- // [13] = { .mapData = lily_all_other_areas_All, .png = "/maps/lily_all_other_areas_All.png",.label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.269333, .mapLongitudeRight = 1.272333, .mapLatitudeBottom = 51.06538078},
+  [12] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_Centre.png",.label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false,    
+                .mapLongitudeLeft = -0.2372896671295166, .mapLongitudeRight = -0.2337116003036499, 
+                .mapLatitudeBottom = 51.2429715947271, .mapLatitudeTop = 51.2446506549525},
 
-//  [13] = { .mapData = lily_all_other_areas_All, .png = "/maps/lily_all_other_areas_All.png", .label="All", .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.263733, .mapLongitudeRight = 1.278033, .mapLatitudeBottom = 51.06265},
+  [13] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_E.png",.label="East",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false,
+                .mapLongitudeLeft = -0.2349776029586792, .mapLongitudeRight =  -0.2313995361328125, 
+                .mapLatitudeBottom = 51.24265593140473, .mapLatitudeTop = 51.244334991630126},
 
-  [13] = { .mapData = lily_all_other_areas_All, .label="All", .backColour=TFT_BLACK, .backText="",
-  .surveyMap=false, .swapBytes=false, .mapLongitudeLeft = 1.256483, .mapLongitudeRight = 1.285283,
-  .mapLatitudeBottom = 51.059282},
+  [14] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_N.png",.label="North",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false,       
+                .mapLongitudeLeft = -0.2382338047027588, .mapLongitudeRight = -0.2346557378768921, 
+                .mapLatitudeBottom = 51.244418944641396, .mapLatitudeTop = 51.2460980048668},
+
+  [15] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_NW.png",.label="North West",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, 
+                .mapLongitudeLeft = -0.23940861225128174, .mapLongitudeRight = -0.23583054542541504, 
+                .mapLatitudeBottom = 51.244026044548654, .mapLatitudeTop = 51.24570510477406},
+
+  [16] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_W.png",.label="West",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false,        
+                .mapLongitudeLeft = -0.24120569229125977, .mapLongitudeRight = -0.23762762546539307, 
+                .mapLatitudeBottom = 51.24387828724882, .mapLatitudeTop = 51.245557347474225},
+
+  [17] = { .mapData = lily_stub_map, .png = "/maps/lily_tapwood_All.png",.label="All",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false,       
+                .mapLongitudeLeft = -0.24093210697174072, .mapLongitudeRight = -0.2318662405014038, 
+                .mapLatitudeBottom = 51.24232011935965, .mapLatitudeTop = 51.246578216091265},
+
+  [18] = { .mapData = lily_all_other_areas_Centre, .png = "/maps/lily_all_other_areas_Centre.png", .label="Out-To-Sea",  .backColour=TFT_BLACK, .backText="",.surveyMap=false, .swapBytes=false, 
+                .mapLongitudeLeft = 1.269333, .mapLongitudeRight = 1.272333, 
+                .mapLatitudeBottom = 51.06538078},
+
+  [19] = { .mapData = lily_all_other_areas_All, .label="All", .backColour=TFT_BLACK, .backText="", .surveyMap=false, .swapBytes=false, 
+                .mapLongitudeLeft = 1.256483, .mapLongitudeRight = 1.285283,
+                .mapLatitudeBottom = 51.059282},
 };
 
 const std::array<MapScreen_ex::pixel, MapScreen_T4::s_registrationPixelsSize> MapScreen_T4::s_registrationPixels
@@ -239,8 +263,6 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
         }
         else
         {
-          USB_SERIAL.printf("Lat: %f Long: %f,  home-bounds: %f, %f, %f\n", lat, lng, m->mapLongitudeLeft, m->mapLongitudeRight, m->mapLatitudeBottom);
-
           m = s_maps+_vobsterAllLakeMapIndex; // test for vobster location
 
           if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
@@ -251,8 +273,19 @@ void MapScreen_T4::setLocationLatLong(double lat, double lng)
           }
           else
           {
-            USB_SERIAL.println("Matched On Other Location");
-            _location = e_other_location;   // ********* out of range of all *********
+            m = s_maps+_tapwoodAllLakeMapIndex; // test for tapwood location
+
+            if (lng > m->mapLongitudeLeft && lng < m->mapLongitudeRight &&
+                lat > m->mapLatitudeBottom && lat < m->mapLatitudeBottom+fixedLatitudeUpperBoundDelta)
+            {
+              USB_SERIAL.println("Matched On Tapwood Location");
+              _location = e_tapwood_location;
+            }
+            else
+            {
+              USB_SERIAL.println("Matched On Other Location");
+              _location = e_other_location;   // ********* out of range of all *********
+            }
           }
         }
       }
@@ -297,6 +330,10 @@ void MapScreen_T4::drawMapScaleToSprite(TFT_eSprite& sprite, const geo_map& feat
       case e_wraysbury_location:
         distanceToShow = 100;
         pixelsForDistance = 108; // worth checking
+        break;
+      case e_tapwood_location:
+        distanceToShow = 100;     // UPDATE THIS
+        pixelsForDistance = 108; // UPDATE THIS
         break;
       case e_other_location:  // assuming 2km width 'all' map
       default:
@@ -416,6 +453,8 @@ int MapScreen_T4::getFirstDetailMapIndex()
       return _homeCentreMapIndex;
     case e_wraysbury_location:
       return _N_WraysburyMapIndex;
+    case e_tapwood_location:
+      return _tapwoodCentreMapIndex;
     case e_other_location:
     default:
       return _allOtherAreasCentreMapIndex;
@@ -430,6 +469,8 @@ int MapScreen_T4::getEndDetailMaps()
       return _vobsterAllLakeMapIndex;
     case e_home_location:
       return _homeAllMapIndex;
+    case e_tapwood_location:
+      return _tapwoodAllLakeMapIndex;
     case e_wraysbury_location:
       return _allLake_WraysburyMapIndex;
     case e_other_location:
@@ -720,6 +761,95 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
       else if (_location == e_vobster_location)
       {
         nextMap = s_maps+getFirstDetailMapIndex();
+      }
+      else if (_location == e_tapwood_location)
+      {
+        nextMap = s_maps+getFirstDetailMapIndex();
+
+        // From east map to centre map
+        if (thisMap == _tapE_Map)
+        {
+          if (loc.x < 50 || loc.y < 50)
+          {
+            nextMap=_tapCentre_Map;
+            return nextMap;
+          }
+        }
+
+        if (thisMap == _tapCentre_Map)   // go right from 0 to 1
+        {
+          // from centre to east
+          if (loc.x > 470 and loc.y > 210)
+          {
+            nextMap=_tapE_Map;
+            return nextMap;
+          }
+
+          // from centre to north west
+          if (loc.x < 10 ||
+              loc.x < 65 and loc.y < 60)
+          {
+            nextMap=_tapNW_Map;
+            return nextMap;
+          }
+
+          // from centre to north
+          if (loc.y < 5)
+          {
+            nextMap=_tapN_Map;
+            return nextMap;
+          }
+        }
+
+        if (thisMap == _tapN_Map)
+        {
+          // from North to centre
+          if (loc.x > 285 && loc.y > 440)
+          {
+            nextMap=_tapCentre_Map;
+            return nextMap;
+          }
+
+          // from North to North West
+          if (loc.x < 50 || loc.y > 440)
+          {
+            nextMap=_tapNW_Map;
+            return nextMap;
+          }
+        }
+
+        if (thisMap == _tapNW_Map)
+        {
+          // From North West to West
+          if (loc.x < 90)
+          {
+            nextMap=_tapW_Map;
+            return nextMap;
+          }
+
+          if (loc.x > 530)
+          {
+            if (loc.y < 325)
+            {
+              nextMap=_tapN_Map;
+              return nextMap;
+            }
+            else
+            {
+              nextMap=_tapCentre_Map;
+              return nextMap;
+            }
+          }
+        }
+
+        if (thisMap == _tapW_Map)
+        {
+          if (loc.y > 475)
+          {
+            nextMap=_tapNW_Map;
+            return nextMap;
+          }
+        }
       }
       else if (_location == e_other_location)
       {
