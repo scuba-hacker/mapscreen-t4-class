@@ -764,61 +764,44 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
       }
       else if (_location == e_tapwood_location)
       {
-        nextMap = s_maps+getFirstDetailMapIndex();
-
         // From east map to centre map
         if (thisMap == _tapE_Map)
         {
-          if (loc.x < 50 || loc.y < 50)
-          {
+          if (loc.x < 80 || loc.y < 30)
             nextMap=_tapCentre_Map;
-            return nextMap;
-          }
         }
-
-        if (thisMap == _tapCentre_Map)   // go right from 0 to 1
+        else if (thisMap == _tapCentre_Map)   // go right from 0 to 1
         {
           // from centre to east
-          if (loc.x > 470 and loc.y > 210)
+          if (loc.x > 530 and loc.y > 190)
           {
             nextMap=_tapE_Map;
-            return nextMap;
           }
-
           // from centre to north west
-          if (loc.x < 10 ||
-              loc.x < 65 and loc.y < 60)
+          else if (loc.x < 100 and loc.y < 115)
           {
             nextMap=_tapNW_Map;
-            return nextMap;
           }
-
           // from centre to north
-          if (loc.y < 5)
+          else if (loc.y < 20)
           {
             nextMap=_tapN_Map;
-            return nextMap;
           }
         }
-
-        if (thisMap == _tapN_Map)
+        else if (thisMap == _tapN_Map)
         {
           // from North to centre
           if (loc.x > 285 && loc.y > 440)
           {
             nextMap=_tapCentre_Map;
-            return nextMap;
           }
-
           // from North to North West
-          if (loc.x < 50 || loc.y > 440)
+          else if (loc.x < 130)
           {
             nextMap=_tapNW_Map;
-            return nextMap;
           }
         }
-
-        if (thisMap == _tapNW_Map)
+        else if (thisMap == _tapNW_Map)
         {
           // From North West to West
           if (loc.x < 90)
@@ -826,34 +809,32 @@ const MapScreen_ex::geo_map* MapScreen_T4::getNextMapByPixelLocation(MapScreen_e
             nextMap=_tapW_Map;
             return nextMap;
           }
-
-          if (loc.x > 530)
+          else if (loc.x > 530)
           {
-            if (loc.y < 325)
+            // From North West to North
+            if (loc.y < 300)
             {
               nextMap=_tapN_Map;
-              return nextMap;
             }
+            // From North West to Centre
             else
             {
               nextMap=_tapCentre_Map;
-              return nextMap;
             }
           }
         }
-
-        if (thisMap == _tapW_Map)
+        else if (thisMap == _tapW_Map)
         {
+          // From West to North West
           if (loc.y > 475)
           {
             nextMap=_tapNW_Map;
-            return nextMap;
           }
         }
         else
         {
+          // default centre
           nextMap = _tapCentre_Map;
-          return nextMap;
         }
       }
       else if (_location == e_other_location)
